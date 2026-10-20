@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Para você, com amor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="hearts" aria-hidden="true"></div>
+
+<div id="loader">
+  <div class="heart" aria-hidden="true">💕</div>
+  <p>Preparando a surpresa…</p>
+  <button id="skip" type="button">pular</button>
+</div>
+
+<header class="hero" id="hero">
+  <h1 id="title"></h1>
+  <p class="since" id="since"></p>
+  <div class="counter">
+    <div><b id="cm">0</b><span>meses</span></div>
+    <div><b id="cd">0</b><span>dias</span></div>
+    <div><b id="ct">00:00:00</b><span>horas</span></div>
+  </div>
+  <p class="total" id="total"></p>
+</header>
+
+<section>
+  <h2>Uma mensagem para você</h2>
+  <p class="sub">Escrita com o coração</p>
+  <p class="letter" id="message"></p>
+  <div class="music" id="musicBox" hidden>
+    <h3>Nossa música</h3>
+    <p>A trilha sonora da nossa história</p>
+    <button class="btn" id="musicBtn" type="button">Clique para descobrir</button>
+    <div id="player"></div>
+  </div>
+</section>
+
+<section>
+  <h2>Nossos momentos</h2>
+  <p class="sub">Memórias que guardamos no coração</p>
+  <div class="car" id="car">
+    <div id="slides"></div>
+    <button class="nav prev" id="prev" type="button" aria-label="Foto anterior">‹</button>
+    <button class="nav next" id="next" type="button" aria-label="Próxima foto">›</button>
+    <span class="num" id="num"></span>
+    <button class="pp" id="pp" type="button" aria-label="Pausar">❚❚</button>
+    <div class="bar" id="bar"></div>
+  </div>
+  <div class="thumbs" id="thumbs"></div>
+</section>
+
+<footer>Feito com carinho 💕</footer>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
