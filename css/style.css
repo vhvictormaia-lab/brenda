@@ -92,7 +92,8 @@ h2{font-size:clamp(1.8rem,5vw,2.4rem);margin-bottom:8px;text-align:center}
 .hero .since{margin-top:14px;color:var(--muted)}
 .counter{display:flex;justify-content:center;gap:12px;margin:40px 0 14px;flex-wrap:wrap}
 .counter div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-width:84px}
-.counter b{display:block;font-family:var(--serif);font-size:2rem;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+.counter b,.nums b{display:block;font-family:var(--serif);font-size:2rem;font-weight:500;font-variant-numeric:tabular-nums;color:var(--accent);background:linear-gradient(90deg,var(--accent),#ffb3c6,var(--accent));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 4s linear infinite}
+@keyframes shine{to{background-position:-200% 0}}
 .counter span{font-size:.85rem;color:var(--muted)}
 .hero h1,.hero .since,.hero .counter,.hero .total{opacity:0}
 .hero.in h1,.hero.in .since,.hero.in .counter,.hero.in .total{animation:up 1s both}
@@ -107,6 +108,25 @@ h2{font-size:clamp(1.8rem,5vw,2.4rem);margin-bottom:8px;text-align:center}
 .reason{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
 .reason span{color:var(--accent);font-size:1.5rem}
 .reason p{font-family:var(--serif);font-size:1.15rem}
+
+/* números */
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.nums div{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 10px;text-align:center}
+.nums b{font-size:clamp(1.5rem,6.5vw,2.2rem)}
+.nums span,.beats span{font-size:.85rem;color:var(--muted)}
+.beats{text-align:center;margin-top:22px}
+.beats b{display:block;font-family:var(--serif);font-size:clamp(1.8rem,8vw,2.8rem);color:var(--accent);font-variant-numeric:tabular-nums}
+.moni{margin:26px auto 0;width:fit-content;max-width:100%;text-align:center;background:var(--soft);border-radius:22px;padding:12px 22px;font-family:var(--serif);font-size:1.1rem}
+
+/* cartinhas */
+.letters{display:grid;gap:14px}
+.lt{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lt button{width:100%;text-align:left;background:none;border:0;padding:16px 18px;display:flex;gap:14px;align-items:center;color:var(--ink);font-family:var(--serif);font-size:1.15rem;cursor:pointer}
+.lt .em{font-size:1.5rem;transition:transform .5s}
+.lt.open .em{transform:rotate(-12deg) scale(1.25)}
+.lt .body{max-height:0;overflow:hidden;padding:0 18px;opacity:0;transition:max-height .8s ease,opacity .8s,padding .5s}
+.lt.open .body{max-height:320px;opacity:1;padding:0 18px 18px}
+.lt .body p{font-family:var(--serif);font-size:1.12rem;line-height:1.6;border-left:3px solid var(--accent);padding-left:14px}
 
 /* galeria: foto inteira, sem cortar */
 .car{position:relative;height:min(76vh,640px);border-radius:20px;overflow:hidden;background:#150b1a;touch-action:pan-y}
