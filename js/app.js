@@ -4,9 +4,16 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const fmtDate = d => new Date(d).toLocaleDateString('pt-BR', {day:'numeric', month:'long', year:'numeric'});
 
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LOW = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 2;
+const SC = LOW ? .55 : 1;   // aparelhos mais fracos recebem menos partículas
+
 /* textos */
 document.title = CONFIG.title;
-$('title').textContent = CONFIG.title;
+let ci = 0;
+$('title').setAttribute('aria-label', CONFIG.title);
+$('title').innerHTML = CONFIG.title.split(' ').map(w => '<span class="w" aria-hidden="true">' +
+  [...w].map(c => '<span class="ch" style="--i:' + (ci++) + '">' + esc(c) + '</span>').join('') + '</span>').join(' ');
 $('since').textContent = 'Juntos desde ' + fmtDate(CONFIG.startDate);
 $('askName').textContent = CONFIG.herName + ',';
 $('askText').textContent = CONFIG.askText;
@@ -27,7 +34,7 @@ document.querySelectorAll('.lt button').forEach(b => b.onclick = () => {
 });
 
 /* corações de fundo */
-for (let i = 0; i < 14; i++) {
+for (let i = 0; i < (LOW ? 7 : 14); i++) {
   const s = document.createElement('span');
   s.textContent = '♥';
   s.style.left = Math.random() * 100 + '%';
@@ -37,30 +44,37 @@ for (let i = 0; i < 14; i++) {
   $('hearts').appendChild(s);
 }
 
-/* explosão de corações (canvas) */
+/* explosão de corações (canvas com sprites prontos e limite de partículas) */
 const cv = $('fx'), cx = cv.getContext('2d');
-let P = [], raf = 0;
-function fit(){ const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
-addEventListener('resize', fit); fit();
+const COLS = ['#ff4d79', '#ff8fab', '#ffd1dc', '#ffffff', '#ffb3c6', '#e0245e'];
+const SPR = COLS.map(c => {
+  const s = document.createElement('canvas'); s.width = s.height = 64;
+  const g = s.getContext('2d'); g.font = '56px serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = c; g.fillText('♥', 32, 34); return s;
+});
+let P = [], raf = 0, W = innerWidth, H = innerHeight, rt;
+function fit(){ const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0); }
+addEventListener('resize', () => { cancelAnimationFrame(rt); rt = requestAnimationFrame(fit); }); fit();
 function burst(x, y, n, sm){
-  const cols = ['#ff4d79', '#ff8fab', '#ffd1dc', '#ffffff', '#ffb3c6', '#e0245e'];
+  n = Math.max(1, Math.round(n * SC));
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2, s = (sm ? 2 : 3) + Math.random() * (sm ? 6 : 12);
     P.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 4, r: sm ? 9 + Math.random() * 10 : 12 + Math.random() * 28,
-             rot: Math.random() * 6, vr: (Math.random() - .5) * .2, c: cols[i % cols.length], l: 1 });
+             rot: Math.random() * 6, vr: (Math.random() - .5) * .2, k: i % SPR.length, l: 1 });
   }
+  if (P.length > 420) P.splice(0, P.length - 420);
   if (!raf) loop();
 }
 function loop(){
-  cx.clearRect(0, 0, innerWidth, innerHeight);
-  P = P.filter(p => p.l > 0 && p.y < innerHeight + 60);
+  cx.clearRect(0, 0, W, H);
+  P = P.filter(p => p.l > 0 && p.y < H + 60);
   for (const p of P) {
     p.vy += .2; p.vx *= .992; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.l -= .005;
-    cx.save(); cx.globalAlpha = Math.max(0, Math.min(1, p.l * 1.6));
-    cx.translate(p.x, p.y); cx.rotate(p.rot); cx.fillStyle = p.c;
-    cx.font = p.r + 'px serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
-    cx.fillText('♥', 0, 0); cx.restore();
+    cx.globalAlpha = Math.max(0, Math.min(1, p.l * 1.6));
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
+    cx.drawImage(SPR[p.k], -p.r / 2, -p.r / 2, p.r, p.r); cx.restore();
   }
+  cx.globalAlpha = 1;
   raf = P.length ? requestAnimationFrame(loop) : 0;
 }
 
@@ -68,13 +82,14 @@ function loop(){
 const bgm = $('bgm');
 if (CONFIG.musicFile) bgm.src = CONFIG.musicFile;
 function fadeIn(){ bgm.volume = 0; let v = 0; const t = setInterval(() => { v = Math.min(.9, v + .03); bgm.volume = v; if (v >= .9) clearInterval(t); }, 120); }
-async function startMusic(){
-  if (!CONFIG.musicFile) return false;
-  try { await bgm.play(); fadeIn(); $('sound').style.display = 'block'; return true; }
-  catch (e) { return false; }
+function startMusic(){
+  if (!CONFIG.musicFile) return Promise.resolve(false);
+  const p = bgm.play().then(() => { fadeIn(); $('sound').style.display = 'block'; return true; }, () => false);
+  return Promise.race([p, sleep(1200).then(() => 'wait')]);   // não deixa a abertura esperando a música carregar
 }
+bgm.addEventListener('error', () => { $('sound').style.display = 'none'; });
 $('sound').onclick = () => {
-  if (bgm.paused) { bgm.play(); $('sound').textContent = '🔊'; }
+  if (bgm.paused) { bgm.play().catch(() => {}); $('sound').textContent = '🔊'; }
   else { bgm.pause(); $('sound').textContent = '🔇'; }
 };
 
@@ -83,15 +98,19 @@ const show = id => document.querySelectorAll('.stage').forEach(s => s.classList.
 let started = false;
 async function sequence(){
   if (started) return; started = true;
-  show('s1'); await sleep(2800);
-  show('s2'); $('bomb').classList.add('arm'); await sleep(3700);
-  $('flash').classList.add('go');
-  show('');
-  burst(innerWidth / 2, innerHeight / 2, 170);
-  await sleep(350); burst(innerWidth / 2, innerHeight / 2, 90);
-  await sleep(1900); show('s3');
+  try {
+    show('s1'); await sleep(RM ? 700 : 2800);
+    if (!RM) {
+      show('s2'); $('bomb').classList.add('arm'); await sleep(3700);
+      flash(); show('');
+      burst(W / 2, H / 2, 170);
+      await sleep(350); burst(W / 2, H / 2, 90);
+      await sleep(1900);
+    }
+  } catch (e) {}
+  show('s3');
 }
-$('openBtn').onclick = async () => { await startMusic(); sequence(); };
+$('openBtn').onclick = () => { startMusic(); sequence(); };
 startMusic().then(ok => { if (ok || !CONFIG.musicFile) sequence(); });
 
 $('yes').onclick = async e => {
@@ -144,6 +163,7 @@ $('bigHeart').onclick = e => {
 function unlock(){
   unlocked = true;
   $('secret').hidden = false;
+  document.querySelectorAll('#ringGallery [data-src]').forEach(el => { el.src = el.dataset.src; });
   flash(); burst(innerWidth / 2, innerHeight / 2, 160);
   setTimeout(() => burst(innerWidth / 2, innerHeight / 3, 90), 400);
   setTimeout(() => $('secret').scrollIntoView({ behavior: 'smooth' }), 1300);
@@ -159,19 +179,19 @@ if (!CONFIG.rings.length) { $('rTitle').remove(); $('ringGallery').remove(); }
 else {
   $('ringGallery').innerHTML = CONFIG.rings.map((r, i) => {
     const media = /\.(mp4|webm|mov)$/i.test(r.src)
-      ? '<video src="' + esc(r.src) + '" controls playsinline preload="metadata"></video>'
-      : '<img src="' + esc(r.src) + '" alt="' + esc(r.caption || 'Nossas alianças') + '" loading="lazy" onerror="this.parentNode.remove()">';
+      ? '<video data-src="' + esc(r.src) + '" controls playsinline preload="metadata"></video>'
+      : '<img data-src="' + esc(r.src) + '" alt="' + esc(r.caption || 'Nossas alianças') + '" decoding="async" onerror="this.parentNode.remove()">';
     return '<figure class="rf rv" style="transition-delay:' + (i * 120) + 'ms">' + media + (r.caption ? '<figcaption>' + esc(r.caption) + '</figcaption>' : '') + '</figure>';
   }).join('');
   let resume = false;
   document.querySelectorAll('.rf video').forEach(v => {
     v.onplay = () => { if (!bgm.paused) { bgm.pause(); resume = true; } };
-    v.onpause = () => { if (resume) { bgm.play(); resume = false; } };
+    v.onpause = () => { if (resume) { bgm.play().catch(() => {}); resume = false; } };
   });
 }
 
 /* céu estrelado e pétalas */
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < (LOW ? 30 : 60); i++) {
   const s = document.createElement('i'), z = 1 + Math.random() * 2.5;
   s.style.cssText = 'left:' + Math.random() * 100 + '%;top:' + Math.random() * 100 + '%;width:' + z + 'px;height:' + z + 'px;animation-delay:' + (-Math.random() * 4) + 's;animation-duration:' + (2 + Math.random() * 3) + 's';
   $('sky').appendChild(s);
@@ -247,18 +267,19 @@ function countUp(){
   const t0 = performance.now();
   (function f(t){ const p = Math.min(1, (t - t0) / 2200); ease = 1 - Math.pow(1 - p, 3); tick(); if (p < 1) requestAnimationFrame(f); })(t0);
 }
-tick(); setInterval(tick, 1000);
+tick(); setInterval(() => { if (!document.hidden) tick(); }, 1000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
 
 /* galeria: foto inteira com fundo desfocado */
 const N = CONFIG.photos.length, DUR = 5000;
-let cur = 0, playing = true, timer = null;
+let cur = 0, playing = true, timer = null, carVis = false;
 $('slides').innerHTML = CONFIG.photos.map((u, i) =>
-  '<div class="slide"><img class="bg" src="' + esc(u) + '" alt="" onerror="this.remove()">' +
-  '<img class="fg" src="' + esc(u) + '" alt="Foto ' + (i + 1) + ' do casal" onerror="this.remove()"></div>').join('');
+  '<div class="slide"><img class="bg" data-i="' + i + '" decoding="async" alt="" onerror="this.remove()">' +
+  '<img class="fg" data-i="' + i + '" decoding="async" alt="Foto ' + (i + 1) + ' do casal" onerror="this.remove()"></div>').join('');
 CONFIG.photos.forEach((u, i) => {
   const b = document.createElement('button');
   b.type = 'button'; b.setAttribute('aria-label', 'Ver foto ' + (i + 1));
-  b.innerHTML = '<img src="' + esc(u) + '" alt="" onerror="this.remove()">';
+  b.innerHTML = '<img data-i="' + i + '" decoding="async" alt="" onerror="this.remove()">';
   b.onclick = () => go(i);
   $('thumbs').appendChild(b);
 });
@@ -266,7 +287,7 @@ function runBar(){
   const bar = $('bar');
   bar.style.transition = 'none'; bar.style.width = '0';
   clearTimeout(timer);
-  if (!playing) return;
+  if (!playing || !carVis || document.hidden) return;
   requestAnimationFrame(() => requestAnimationFrame(() => { bar.style.transition = 'width ' + DUR + 'ms linear'; bar.style.width = '100%'; }));
   timer = setTimeout(() => go(cur + 1), DUR);
 }
@@ -289,3 +310,29 @@ $('car').addEventListener('touchend', e => {
   sx = null;
 });
 if (N) go(0);
+
+new IntersectionObserver(es => { carVis = es[0].isIntersecting; runBar(); }, { threshold: .3 }).observe($('car'));
+document.addEventListener('visibilitychange', runBar);
+
+/* fotos entram uma de cada vez, sem competir com a música */
+let photosStarted = false;
+function startPhotos(){
+  if (photosStarted) return; photosStarted = true;
+  let i = 0;
+  (function next(){
+    if (i >= N) return;
+    const k = i++, u = CONFIG.photos[k], im = new Image();
+    im.onload = im.onerror = () => { document.querySelectorAll('[data-i="' + k + '"]').forEach(el => { el.src = u; }); setTimeout(next, 60); };
+    im.src = u;
+  })();
+}
+bgm.addEventListener('canplay', startPhotos, { once: true });
+setTimeout(startPhotos, 3000);
+
+/* rastro de corações com o mouse (só no computador) */
+let lastT = 0;
+addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse' || !$('site').classList.contains('show')) return;
+  const t = performance.now(); if (t - lastT < 90) return; lastT = t;
+  burst(e.clientX, e.clientY, 1, true);
+}, { passive: true });
