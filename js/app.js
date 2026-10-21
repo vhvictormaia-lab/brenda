@@ -122,13 +122,100 @@ function watch(){
     e.target.classList.add('in'); io.unobserve(e.target);
     if (e.target.contains($('message'))) typeIt();
     if (e.target.id === 'nums') countUp();
+    if (e.target.id === 'clockBox') runClock();
   }), { threshold: .2 });
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
 }
 addEventListener('pointerdown', e => {
   if ($('site').classList.contains('show') && !e.target.closest('button')) burst(e.clientX, e.clientY, 8, true);
 });
-$('bigHeart').onclick = e => burst(e.clientX, e.clientY, 60);
+/* ===== segredo: 5 toques no coração ===== */
+function flash(){ const f = $('flash'); f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+let taps = 0, unlocked = false;
+$('bigHeart').onclick = e => {
+  burst(e.clientX, e.clientY, unlocked ? 40 : 60);
+  if (unlocked) return;
+  taps++;
+  $('taps').classList.add('on');
+  [...$('taps').children].forEach((d, k) => d.classList.toggle('f', k < taps));
+  $('hint').textContent = taps < 5 ? 'Continue tocando… tem uma surpresa 💞' : '💍 Role para baixo…';
+  if (taps >= 5) unlock();
+};
+function unlock(){
+  unlocked = true;
+  $('secret').hidden = false;
+  flash(); burst(innerWidth / 2, innerHeight / 2, 160);
+  setTimeout(() => burst(innerWidth / 2, innerHeight / 3, 90), 400);
+  setTimeout(() => $('secret').scrollIntoView({ behavior: 'smooth' }), 1300);
+}
+
+$('sTitle').textContent = CONFIG.secretTitle;
+$('sSub').textContent = CONFIG.secretSub;
+$('invNames').textContent = (CONFIG.hisName || 'Eu') + ' & ' + CONFIG.herName;
+$('invLine').textContent = CONFIG.inviteLine;
+$('invDate').textContent = CONFIG.inviteDate;
+$('promises').innerHTML = CONFIG.promises.map((t, i) => '<p class="pm rv" style="transition-delay:' + (i * 80) + 'ms">' + esc(t) + '</p>').join('');
+if (!CONFIG.rings.length) { $('rTitle').remove(); $('ringGallery').remove(); }
+else {
+  $('ringGallery').innerHTML = CONFIG.rings.map((r, i) => {
+    const media = /\.(mp4|webm|mov)$/i.test(r.src)
+      ? '<video src="' + esc(r.src) + '" controls playsinline preload="metadata"></video>'
+      : '<img src="' + esc(r.src) + '" alt="' + esc(r.caption || 'Nossas alianças') + '" loading="lazy" onerror="this.parentNode.remove()">';
+    return '<figure class="rf rv" style="transition-delay:' + (i * 120) + 'ms">' + media + (r.caption ? '<figcaption>' + esc(r.caption) + '</figcaption>' : '') + '</figure>';
+  }).join('');
+  let resume = false;
+  document.querySelectorAll('.rf video').forEach(v => {
+    v.onplay = () => { if (!bgm.paused) { bgm.pause(); resume = true; } };
+    v.onpause = () => { if (resume) { bgm.play(); resume = false; } };
+  });
+}
+
+/* céu estrelado e pétalas */
+for (let i = 0; i < 70; i++) {
+  const s = document.createElement('i'), z = 1 + Math.random() * 2.5;
+  s.style.cssText = 'left:' + Math.random() * 100 + '%;top:' + Math.random() * 100 + '%;width:' + z + 'px;height:' + z + 'px;animation-delay:' + (-Math.random() * 4) + 's;animation-duration:' + (2 + Math.random() * 3) + 's';
+  $('sky').appendChild(s);
+}
+for (let i = 0; i < 12; i++) {
+  const p = document.createElement('b');
+  p.textContent = i % 3 ? '🌸' : '♥';
+  p.style.cssText = 'left:' + Math.random() * 100 + '%;font-size:' + (14 + Math.random() * 14) + 'px;animation-duration:' + (10 + Math.random() * 10) + 's;animation-delay:' + (-Math.random() * 14) + 's';
+  $('sky').appendChild(p);
+}
+
+/* relógio: o tempo correndo atrás da aliança do futuro */
+for (let i = 0; i < 12; i++) {
+  const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l.setAttribute('x1', 120); l.setAttribute('x2', 120); l.setAttribute('y1', 30); l.setAttribute('y2', i % 3 ? 38 : 42);
+  l.setAttribute('transform', 'rotate(' + i * 30 + ' 120 120)');
+  $('ticks').appendChild(l);
+}
+let running = false;
+function runClock(){
+  if (running) return; running = true;
+  $('clockBox').classList.remove('done');
+  const D = 9500, L = 1080, t0 = performance.now(); let stage = -1;
+  (function f(t){
+    const p = Math.min(1, (t - t0) / D), e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    const a = L * e, lead = 140 * (1 - p * p);
+    $('hand').setAttribute('transform', 'rotate(' + a + ' 120 120)');
+    $('ringDot').setAttribute('transform', 'rotate(' + (a + lead) + ' 120 120)');
+    const st = p < .3 ? 0 : p < .68 ? 1 : p < 1 ? 2 : 3;
+    if (st !== stage) { stage = st; $('clockText').textContent = CONFIG.clockLines[st]; }
+    if (p < 1) return requestAnimationFrame(f);
+    running = false; $('clockBox').classList.add('done');
+    const r = $('ringIn').getBoundingClientRect();
+    flash(); burst(r.left + r.width / 2, r.top + r.height / 2, 90);
+  })(t0);
+}
+$('clockBox').onclick = runClock;
+
+/* selar a promessa */
+$('seal').onclick = () => {
+  $('seal').disabled = true; flash();
+  for (let i = 0; i < 6; i++) setTimeout(() => burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.25 + Math.random() * .4), 70), i * 380);
+  $('sealed').textContent = CONFIG.sealedText; $('sealed').classList.add('show');
+};
 
 /* contador: total de horas, minutos, segundos e próximo mêsversário */
 const start = new Date(CONFIG.startDate);

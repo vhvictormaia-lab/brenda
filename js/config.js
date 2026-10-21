@@ -30,6 +30,32 @@ const CONFIG = {
 
   finalMessage: 'Eu não sei tudo o que o futuro guarda, mas sei com quem eu quero viver cada parte dele. Obrigado por existir na minha vida.',
 
+  /* ===== SEGREDO: aparece depois de tocar 5 vezes no coração do final ===== */
+  hisName: '',   // seu nome; vazio = o convite mostra "Eu & Brenda"
+  secretTitle: 'Você descobriu o nosso segredo',
+  secretSub: 'Agora vem a parte que é só nossa: as alianças, as promessas e o futuro que a gente sonha.',
+  rings: [
+    // Coloque fotos e vídeos em assets/rings/ e liste aqui, por exemplo:
+    // { src: 'assets/rings/alianca1.jpg', caption: 'O dia em que as alianças chegaram' },
+    // { src: 'assets/rings/alianca-video.mp4', caption: 'Nosso momento' }
+  ],
+  promises: [
+    'Prometo te escolher todos os dias, até nos dias em que for difícil.',
+    'Prometo ser a sua calma quando o mundo estiver barulhento.',
+    'Prometo cuidar dos seus sonhos como se fossem meus, porque agora são.',
+    'Prometo rir com você, crescer com você e envelhecer com você.',
+    'E prometo que, quando o tempo for o certo, vou te fazer a pergunta mais importante da minha vida.'
+  ],
+  clockLines: [
+    'O tempo corre depressa…',
+    '…e a aliança do nosso futuro vai sempre um passo à frente…',
+    'mas eu vou te alcançar, no nosso tempo, no nosso dia.',
+    'Um dia o tempo para, e o sim acontece. 💍'
+  ],
+  inviteLine: 'Um dia, no tempo certo',
+  inviteDate: 'Data: a gente escolhe junto 💍',
+  sealedText: 'Promessa selada. Até o nosso dia, meu amor. 💍',
+
   musicFile: 'assets/music/nossa-musica.mp3.mp3',
   photos: [
     'assets/photos/assetsphotosfoto1.jpg.jpeg',
