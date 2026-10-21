@@ -153,3 +153,49 @@ h2{font-size:clamp(1.8rem,5vw,2.4rem);margin-bottom:8px;text-align:center}
 .hint{color:var(--muted);font-size:.9rem;margin-top:26px}
 footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){#hearts{display:none}.rv{opacity:1;transform:none}.bigheart,.yes,.env{animation:none}}
+
+/* toques no coração */
+.taps{display:none;justify-content:center;gap:8px;margin-top:12px}
+.taps.on{display:flex}
+.taps i{width:10px;height:10px;border-radius:50%;border:2px solid var(--accent);transition:.3s}
+.taps i.f{background:var(--accent);transform:scale(1.3)}
+
+/* segredo */
+.secret{position:relative;color:#ffeef2;background:linear-gradient(180deg,var(--bg) 0,#1a0c2b 14%,#2a1238 60%,#3d1745 100%);z-index:1;overflow:hidden}
+.secret[hidden]{display:none}
+.sky{position:sticky;top:0;height:100vh;margin-bottom:-100vh;overflow:hidden;pointer-events:none}
+.sky i{position:absolute;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:1}}
+.sky b{position:absolute;top:-40px;font-weight:400;opacity:.8;color:#ff9db6;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(110vh) rotate(260deg)}}
+.sc{position:relative;max-width:760px;margin:0 auto;padding:110px 22px 90px;text-align:center}
+.kicker{letter-spacing:.3em;text-transform:uppercase;font-size:.8rem;color:#f5c542}
+.sc h2{color:#fff;margin-top:12px}
+.sc .sub{color:#d9b8d0}
+.ringsw svg{width:min(78vw,300px);margin:26px auto 8px;display:block;overflow:visible}
+.r1,.r2{transition:transform 2.8s cubic-bezier(.2,.8,.2,1)}
+.r1{transform:translateX(-70px)}.r2{transform:translateX(70px)}
+.rv.in .r1,.rv.in .r2{transform:none}
+.gem{animation:tw 1.6s infinite}
+.rt{margin-top:46px;color:#f9d976;font-style:italic}
+.rg{display:grid;gap:22px;margin:24px 0}
+.rf{margin:0}
+.rf img,.rf video{width:100%;max-height:72vh;object-fit:contain;border-radius:18px;border:1.5px solid #f5c54266;background:#12081c;box-shadow:0 0 40px #f5c54222}
+.rf figcaption{margin-top:10px;font-family:var(--serif);font-style:italic;color:#e8c9dc}
+.promises{display:grid;gap:38px;margin:60px 0}
+.pm{font-family:var(--serif);font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.45;position:relative;padding-bottom:20px}
+.pm::after{content:"♥";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%) scale(0);color:#ff7d9c;transition:transform .8s .5s}
+.pm.in::after{transform:translateX(-50%) scale(1)}
+.clockbox{margin:70px auto 50px;max-width:340px;cursor:pointer}
+.clockbox svg{width:100%;transition:filter 1s}
+.clockbox p{min-height:5em;font-family:var(--serif);font-style:italic;font-size:1.15rem;margin-top:14px}
+.clockbox.done svg{filter:drop-shadow(0 0 22px #f5c542aa)}
+.invite{margin:60px auto;max-width:420px;padding:36px 22px;border-radius:22px;border:1.5px solid #f5c54288;background:linear-gradient(160deg,#ffffff0f,#f5c5420d);outline:1px dashed #f5c54255;outline-offset:-10px}
+.iv1{letter-spacing:.3em;text-transform:uppercase;font-size:.75rem;color:#f5c542}
+.names{font-family:var(--serif);font-style:italic;font-size:clamp(2rem,9vw,2.8rem);margin:14px 0}
+.iv2{font-family:var(--serif);font-size:1.2rem}
+.iv3{color:#d9b8d0;margin-top:8px;font-size:.95rem}
+.btn.gold{background:linear-gradient(135deg,#f9d976,#f5a623);color:#3a1a2e;font-size:1.15rem;padding:16px 34px}
+.btn.gold:disabled{opacity:.75}
+.sealed{margin-top:26px;font-family:var(--serif);font-style:italic;font-size:1.3rem;color:#f9d976;opacity:0;transition:opacity 1.2s}
+.sealed.show{opacity:1}
