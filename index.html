@@ -102,8 +102,49 @@
     <button class="bigheart" id="bigHeart" type="button" aria-label="Soltar corações">♥</button>
     <h2 class="te">Eu te amo</h2>
     <p class="fm" id="finalText"></p>
-    <p class="hint">Toque no coração 💕</p>
+    <p class="hint" id="hint">Toque no coração 💕</p>
+    <div class="taps" id="taps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   </section>
+
+  <div class="secret" id="secret" hidden>
+    <div class="sky" id="sky" aria-hidden="true"></div>
+    <div class="sc">
+      <p class="kicker rv">só nós dois sabemos</p>
+      <h2 class="rv" id="sTitle"></h2>
+      <div class="rv ringsw">
+        <svg viewBox="0 0 200 110" aria-hidden="true">
+          <circle class="r1" cx="80" cy="60" r="34" fill="none" stroke="#f5c542" stroke-width="7"/>
+          <circle class="r2" cx="120" cy="60" r="34" fill="none" stroke="#ffd98a" stroke-width="7"/>
+          <polygon class="gem" points="80,10 88,19 80,28 72,19" fill="#cfefff"/>
+        </svg>
+      </div>
+      <p class="sub rv" id="sSub"></p>
+      <h3 class="rv rt" id="rTitle">Nossas alianças</h3>
+      <div class="rg" id="ringGallery"></div>
+      <div class="promises" id="promises"></div>
+      <div class="clockbox rv" id="clockBox" title="Toque para ver de novo">
+        <svg viewBox="0 0 240 240" aria-hidden="true">
+          <circle cx="120" cy="120" r="100" fill="#ffffff08" stroke="#ffffff55" stroke-width="3"/>
+          <g id="ticks" stroke="#ffd9e3" stroke-width="3" stroke-linecap="round"></g>
+          <line id="hand" x1="120" y1="120" x2="120" y2="46" stroke="#ff8fab" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="120" cy="120" r="7" fill="#ff8fab"/>
+          <g id="ringDot"><g id="ringIn" transform="translate(120,20)">
+            <circle r="9" fill="#2a1238" stroke="#f5c542" stroke-width="4"/>
+            <polygon points="0,-20 6,-13 0,-7 -6,-13" fill="#cfefff"/>
+          </g></g>
+        </svg>
+        <p id="clockText"></p>
+      </div>
+      <div class="invite rv">
+        <p class="iv1">Reserve esta data</p>
+        <p class="names" id="invNames"></p>
+        <p class="iv2" id="invLine"></p>
+        <p class="iv3" id="invDate"></p>
+      </div>
+      <button class="btn gold" id="seal" type="button">Selar nossa promessa 💍</button>
+      <p class="sealed" id="sealed"></p>
+    </div>
+  </div>
 </main>
 <footer>Feito com todo o meu amor 💕</footer>
 
