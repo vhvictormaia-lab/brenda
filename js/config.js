@@ -9,7 +9,10 @@ const CONFIG = {
     'assets/photos/foto1.jpg',
     'assets/photos/foto2.jpg',
     'assets/photos/foto3.jpg',
-    'assets/photos/foto4.jpg'
-  ]
+    'assets/photos/foto4.jpg',
+    'assets/photos/foto5.jpg',
+    'assets/photos/foto6.jpg',
+    'assets/photos/foto7.jpg'
+   ]
 };
 /* ================================================================ */
