@@ -20,6 +20,14 @@ const CONFIG = {
     'Ao seu lado, tudo faz sentido.'
   ],
 
+  /* cartinhas "Abra quando..." */
+  letters: [
+    { title: 'Abra quando estiver com saudade', text: 'Fecha os olhos e respira fundo. Eu estou pensando em você agora, mesmo que você não saiba. A saudade é só o amor esperando o próximo abraço, e ele já está a caminho.' },
+    { title: 'Abra quando o dia estiver difícil', text: 'Você é mais forte do que imagina e, quando não se sentir assim, eu acredito em você por nós dois. Nada pesa tanto quando a gente divide. Eu estou aqui, sempre.' },
+    { title: 'Abra quando estiver feliz', text: 'Que bom ver você assim! Guarda esse sorriso, porque ele é a coisa mais linda que eu conheço. Eu passaria a vida inteira só para ver esse brilho nos seus olhos.' },
+    { title: 'Abra antes de dormir', text: 'Boa noite, meu amor. Descansa, porque amanhã tem mais um dia para eu te amar um pouquinho mais do que hoje.' }
+  ],
+
   finalMessage: 'Eu não sei tudo o que o futuro guarda, mas sei com quem eu quero viver cada parte dele. Obrigado por existir na minha vida.',
 
   musicFile: 'assets/music/nossa-musica.mp3.mp3',

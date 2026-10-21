@@ -16,6 +16,16 @@ $('finalText').textContent = CONFIG.finalMessage;
 $('reasons').innerHTML = CONFIG.reasons.map((r, i) =>
   '<div class="reason rv" style="transition-delay:' + (i * 120) + 'ms"><span>♥</span><p>' + esc(r) + '</p></div>').join('');
 
+$('letters').innerHTML = CONFIG.letters.map((l, i) =>
+  '<div class="lt rv" style="transition-delay:' + (i * 120) + 'ms"><button type="button" aria-expanded="false"><span class="em">✉️</span>' + esc(l.title) +
+  '</button><div class="body"><p>' + esc(l.text) + '</p></div></div>').join('');
+document.querySelectorAll('.lt button').forEach(b => b.onclick = () => {
+  const open = b.parentNode.classList.toggle('open');
+  b.setAttribute('aria-expanded', open);
+  b.firstChild.textContent = open ? '💌' : '✉️';
+  if (open) { const r = b.getBoundingClientRect(); burst(r.left + 34, r.top + 24, 28, true); }
+});
+
 /* corações de fundo */
 for (let i = 0; i < 14; i++) {
   const s = document.createElement('span');
@@ -32,11 +42,11 @@ const cv = $('fx'), cx = cv.getContext('2d');
 let P = [], raf = 0;
 function fit(){ const d = devicePixelRatio || 1; cv.width = innerWidth * d; cv.height = innerHeight * d; cx.setTransform(d, 0, 0, d, 0, 0); }
 addEventListener('resize', fit); fit();
-function burst(x, y, n){
+function burst(x, y, n, sm){
   const cols = ['#ff4d79', '#ff8fab', '#ffd1dc', '#ffffff', '#ffb3c6', '#e0245e'];
   for (let i = 0; i < n; i++) {
-    const a = Math.random() * Math.PI * 2, s = 3 + Math.random() * 12;
-    P.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 4, r: 12 + Math.random() * 28,
+    const a = Math.random() * Math.PI * 2, s = (sm ? 2 : 3) + Math.random() * (sm ? 6 : 12);
+    P.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 4, r: sm ? 9 + Math.random() * 10 : 12 + Math.random() * 28,
              rot: Math.random() * 6, vr: (Math.random() - .5) * .2, c: cols[i % cols.length], l: 1 });
   }
   if (!raf) loop();
@@ -111,23 +121,44 @@ function watch(){
     if (!e.isIntersecting) return;
     e.target.classList.add('in'); io.unobserve(e.target);
     if (e.target.contains($('message'))) typeIt();
+    if (e.target.id === 'nums') countUp();
   }), { threshold: .2 });
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
 }
+addEventListener('pointerdown', e => {
+  if ($('site').classList.contains('show') && !e.target.closest('button')) burst(e.clientX, e.clientY, 8, true);
+});
 $('bigHeart').onclick = e => burst(e.clientX, e.clientY, 60);
 
-/* contador */
+/* contador: total de horas, minutos, segundos e próximo mêsversário */
 const start = new Date(CONFIG.startDate);
+const nf = n => Math.floor(n).toLocaleString('pt-BR');
+let ease = 0;
 function tick(){
   const now = new Date();
   let months = (now.getFullYear() - start.getFullYear()) * 12 + now.getMonth() - start.getMonth();
   let anchor = new Date(start); anchor.setMonth(start.getMonth() + months);
   if (anchor > now) { months--; anchor = new Date(start); anchor.setMonth(start.getMonth() + months); }
-  const ms = Math.max(0, now - anchor), rest = ms % 864e5;
+  const ms = Math.max(0, now - anchor), tot = Math.max(0, now - start), k = ease;
   $('cm').textContent = Math.max(0, months);
   $('cd').textContent = Math.floor(ms / 864e5);
-  $('ct').textContent = pad(Math.floor(rest / 36e5)) + ':' + pad(Math.floor(rest % 36e5 / 6e4)) + ':' + pad(Math.floor(rest % 6e4 / 1e3));
-  $('total').textContent = 'São ' + Math.max(0, Math.floor((now - start) / 864e5)) + ' dias de amor';
+  $('ct').textContent = nf(tot / 36e5);
+  $('total').textContent = 'São ' + nf(tot / 864e5) + ' dias de amor';
+  $('nd').textContent = nf(tot / 864e5 * k);
+  $('nh').textContent = nf(tot / 36e5 * k);
+  $('nm').textContent = nf(tot / 6e4 * k);
+  $('ns').textContent = nf(tot / 1e3 * k);
+  $('nb').textContent = nf(tot / 6e4 * 72 * k);
+  let n = 0, next = new Date(start);
+  while (next <= now) { n++; next = new Date(start); next.setMonth(start.getMonth() + n); }
+  const faltam = Math.ceil((next - now) / 864e5);
+  $('moni').textContent = (now.getDate() === start.getDate() && months >= 1)
+    ? 'Hoje completamos ' + months + (months > 1 ? ' meses' : ' mês') + ' juntos! 🎉'
+    : 'Faltam ' + faltam + (faltam === 1 ? ' dia' : ' dias') + ' para completarmos ' + Math.max(1, n) + (n > 1 ? ' meses' : ' mês') + ' 💞';
+}
+function countUp(){
+  const t0 = performance.now();
+  (function f(t){ const p = Math.min(1, (t - t0) / 2200); ease = 1 - Math.pow(1 - p, 3); tick(); if (p < 1) requestAnimationFrame(f); })(t0);
 }
 tick(); setInterval(tick, 1000);
 
