@@ -9,54 +9,84 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-
+<body class="lock">
 <div id="hearts" aria-hidden="true"></div>
+<audio id="bgm" loop preload="auto"></audio>
+<div id="flash"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 
-<div id="loader">
-  <div class="heart" aria-hidden="true">💕</div>
-  <p>Preparando a surpresa…</p>
-  <button id="skip" type="button">pular</button>
+<div id="intro">
+  <div class="stage on" id="s0">
+    <div class="env" aria-hidden="true">💌</div>
+    <h1>Tem uma surpresa para você</h1>
+    <button class="btn" id="openBtn" type="button">Toque para abrir</button>
+  </div>
+  <div class="stage" id="s1">
+    <p class="prep">Preparando a surpresa…</p>
+    <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+  <div class="stage" id="s2"><div id="bomb" aria-hidden="true">♥</div></div>
+  <div class="stage" id="s3">
+    <div class="ask">
+      <span class="deco d1" aria-hidden="true">🌹</span><span class="deco d2" aria-hidden="true">✨</span>
+      <span class="deco d3" aria-hidden="true">🕊️</span><span class="deco d4" aria-hidden="true">💗</span>
+      <span class="deco d5" aria-hidden="true">🌸</span><span class="deco d6" aria-hidden="true">✨</span>
+      <h2 id="askName"></h2>
+      <p id="askText"></p>
+      <p class="q" id="askQ"></p>
+      <button class="yes" id="yes" type="button"></button>
+    </div>
+  </div>
 </div>
 
-<header class="hero" id="hero">
-  <h1 id="title"></h1>
-  <p class="since" id="since"></p>
-  <div class="counter">
-    <div><b id="cm">0</b><span>meses</span></div>
-    <div><b id="cd">0</b><span>dias</span></div>
-    <div><b id="ct">00:00:00</b><span>horas</span></div>
-  </div>
-  <p class="total" id="total"></p>
-</header>
+<button id="sound" type="button" aria-label="Ligar ou desligar o som">🔊</button>
 
-<section>
-  <h2>Uma mensagem para você</h2>
-  <p class="sub">Escrita com o coração</p>
-  <p class="letter" id="message"></p>
-  <div class="music" id="musicBox" hidden>
-    <h3>Nossa música</h3>
-    <p>A trilha sonora da nossa história</p>
-    <button class="btn" id="musicBtn" type="button">Clique para descobrir</button>
-    <div id="player"></div>
-  </div>
-</section>
+<main id="site">
+  <header class="hero" id="hero">
+    <h1 id="title"></h1>
+    <p class="since" id="since"></p>
+    <div class="counter">
+      <div><b id="cm">0</b><span>meses</span></div>
+      <div><b id="cd">0</b><span>dias</span></div>
+      <div><b id="ct">00:00:00</b><span>horas</span></div>
+    </div>
+    <p class="total" id="total"></p>
+  </header>
 
-<section>
-  <h2>Nossos momentos</h2>
-  <p class="sub">Memórias que guardamos no coração</p>
-  <div class="car" id="car">
-    <div id="slides"></div>
-    <button class="nav prev" id="prev" type="button" aria-label="Foto anterior">‹</button>
-    <button class="nav next" id="next" type="button" aria-label="Próxima foto">›</button>
-    <span class="num" id="num"></span>
-    <button class="pp" id="pp" type="button" aria-label="Pausar">❚❚</button>
-    <div class="bar" id="bar"></div>
-  </div>
-  <div class="thumbs" id="thumbs"></div>
-</section>
+  <section class="rv">
+    <h2>Uma carta para você</h2>
+    <p class="sub">Escrita com o coração</p>
+    <p class="letter" id="message"></p>
+  </section>
 
-<footer>Feito com carinho 💕</footer>
+  <section>
+    <h2 class="rv">Motivos pelos quais eu te amo</h2>
+    <p class="sub rv">Só alguns, porque seriam infinitos</p>
+    <div id="reasons"></div>
+  </section>
+
+  <section class="rv">
+    <h2>Nossos momentos</h2>
+    <p class="sub">Memórias que guardamos no coração</p>
+    <div class="car" id="car">
+      <div id="slides"></div>
+      <button class="nav prev" id="prev" type="button" aria-label="Foto anterior">‹</button>
+      <button class="nav next" id="next" type="button" aria-label="Próxima foto">›</button>
+      <span class="num" id="num"></span>
+      <button class="pp" id="pp" type="button" aria-label="Pausar">❚❚</button>
+      <div class="bar" id="bar"></div>
+    </div>
+    <div class="thumbs" id="thumbs"></div>
+  </section>
+
+  <section class="final rv">
+    <button class="bigheart" id="bigHeart" type="button" aria-label="Soltar corações">♥</button>
+    <h2 class="te">Eu te amo</h2>
+    <p class="fm" id="finalText"></p>
+    <p class="hint">Toque no coração 💕</p>
+  </section>
+</main>
+<footer>Feito com todo o meu amor 💕</footer>
 
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
