@@ -5,18 +5,18 @@ const CONFIG = {
   startDate: '2026-09-10T00:00:00',   // 10 de setembro de 2026 (ano-mês-dia)
 
   /* pergunta da abertura */
-  askText: 'Desde 10 de setembro o meu mundo ficou mais bonito, mais leve e muito mais feliz. Você é a minha paz, o meu lugar favorito e o meu melhor pedaço de futuro.',
+  askText: 'Desde 10 de setembro o meu mundo ficou mais bonito, mais leve e muito mais feliz. Você é a minha paz, a minha alegria e o meu melhor pedaço de futuro.',
   askQuestion: 'Você aceita continuar sendo a razão do meu sorriso, hoje e todos os dias?',
   yesLabel: 'Sim 💖',
 
   /* carta (aparece sendo escrita) */
-  message: 'Eu nunca imaginei que alguém pudesse mudar tanto os meus dias só por existir. Você chegou de mansinho e, sem perceber, ficou com tudo o que eu tenho de melhor. Com você eu aprendi que amor é calma, é riso fácil, é segurar a mão em silêncio. Obrigado por me escolher, por cuidar de mim e por ser o meu lugar. Eu quero te escolher de novo amanhã, e depois, e depois.',
+  message: 'Eu nunca imaginei que alguém pudesse mudar tanto os meus dias só por existir. Você chegou de mansinho e, sem perceber, ficou com tudo o que eu tenho de melhor. Com você eu aprendi que amor é calma, é riso fácil, é segurar a mão em silêncio. Obrigado por me escolher, por cuidar de mim e por me amar do jeito que você ama. Eu quero te escolher de novo amanhã, e depois, e depois.',
 
   reasons: [
     'O seu sorriso muda o meu dia inteiro.',
     'Com você, até o silêncio é gostoso.',
     'Você me faz querer ser uma pessoa melhor.',
-    'O seu abraço é o meu lugar favorito do mundo.',
+    'O seu abraço me acalma como nada mais no mundo.',
     'Ao seu lado, tudo faz sentido.'
   ],
 
@@ -56,6 +56,18 @@ const CONFIG = {
   inviteLine: 'Um dia, no tempo certo',
   inviteDate: 'Data: a gente escolhe junto 💍',
   sealedText: 'Promessa selada. Até o nosso dia, meu amor. 💍',
+
+  /* agradecimento (aparece depois de "Selar nossa promessa"); {nome} vira o nome dela */
+  thanks: [
+    'Deus, obrigado.',
+    'Obrigado por ter colocado essa mulher tão especial no meu caminho.',
+    'Pelo sorriso dela, pelo coração dela e pelo jeito como ela cuida de quem ama.',
+    'Por cada dia ao lado dela e por tudo o que ainda vamos viver juntos.',
+    'Abençoa o nosso amor, guarda os nossos planos e permite que a gente chegue ao dia do nosso sim.',
+    '{nome}, obrigado por existir, por me escolher e por me ensinar o que é amar de verdade.'
+  ],
+  thanksFinal: 'Eu te amo, {nome}',
+  thanksSign: 'Hoje, amanhã e para sempre. 💍',
 
   musicFile: 'assets/music/nossa-musica.mp3',
   photos: [   // galeria principal (pasta assets/photos)

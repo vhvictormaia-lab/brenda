@@ -62,20 +62,36 @@ function burst(x, y, n, sm){
     P.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 4, r: sm ? 9 + Math.random() * 10 : 12 + Math.random() * 28,
              rot: Math.random() * 6, vr: (Math.random() - .5) * .2, k: i % SPR.length, l: 1 });
   }
-  if (P.length > 420) P.splice(0, P.length - 420);
+  if (P.length > 650) P.splice(0, P.length - 650);
   if (!raf) loop();
 }
 function loop(){
   cx.clearRect(0, 0, W, H);
   P = P.filter(p => p.l > 0 && p.y < H + 60);
   for (const p of P) {
-    p.vy += .2; p.vx *= .992; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.l -= .005;
+    p.vy += (p.g == null ? .2 : p.g); p.vx *= .992; if (p.sw) p.vx += Math.sin(p.y / 45 + p.rot) * .05; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.l -= (p.d || .005);
     cx.globalAlpha = Math.max(0, Math.min(1, p.l * 1.6));
     cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot);
-    cx.drawImage(SPR[p.k], -p.r / 2, -p.r / 2, p.r, p.r); cx.restore();
+    cx.drawImage((p.a || SPR)[p.k], -p.r / 2, -p.r / 2, p.r, p.r); cx.restore();
   }
   cx.globalAlpha = 1;
   raf = P.length ? requestAnimationFrame(loop) : 0;
+}
+
+/* flores (emoji) para a cena final */
+const FLW = ['🌹', '🌷', '🌸', '💐', '🌺', '🌻', '🌼', '✨', '💖', '🤍'].map(e => {
+  const s = document.createElement('canvas'); s.width = s.height = 64;
+  const g = s.getContext('2d'); g.font = '48px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(e, 32, 36); return s;
+});
+function shoot(o){
+  const n = Math.max(1, Math.round(o.n * SC));
+  for (let i = 0; i < n; i++) P.push({
+    x: o.x + (Math.random() - .5) * (o.w || 0), y: o.y, vx: (o.vx || 0) + (Math.random() - .5) * (o.sx || 6), vy: (o.vy || 0) + (Math.random() - .5) * (o.sy || 4),
+    r: (o.r || 30) * (.6 + Math.random() * .8), rot: Math.random() * 6, vr: (Math.random() - .5) * .14,
+    k: Math.floor(Math.random() * FLW.length), a: FLW, l: o.l || 1.4, g: o.g, d: o.d, sw: o.sw });
+  if (P.length > 650) P.splice(0, P.length - 650);
+  if (!raf) loop();
 }
 
 /* música: começa assim que o navegador permitir */
@@ -130,7 +146,8 @@ $('yes').onclick = async e => {
 
 /* revelar ao rolar + carta sendo escrita */
 async function typeIt(){
-  const el = $('message'), t = CONFIG.message;
+  const el = $('message'), t = CONFIG.message, env = $('env2');
+  env.classList.add('open'); await sleep(1300); env.classList.add('gone'); await sleep(900); el.classList.add('on');
   el.setAttribute('aria-label', t); el.textContent = ''; el.classList.add('typing');
   for (const ch of t) { el.textContent += ch; await sleep('.,'.includes(ch) ? 240 : 32); }
   el.classList.remove('typing');
@@ -166,6 +183,7 @@ function unlock(){
   document.querySelectorAll('#ringGallery [data-src]').forEach(el => { el.src = el.dataset.src; if (el.dataset.poster) el.poster = el.dataset.poster; });
   flash(); burst(innerWidth / 2, innerHeight / 2, 160);
   setTimeout(() => burst(innerWidth / 2, innerHeight / 3, 90), 400);
+  vib([60, 40, 60]);
   setTimeout(() => $('secret').scrollIntoView({ behavior: 'smooth' }), 1300);
 }
 
@@ -213,6 +231,12 @@ for (let i = 0; i < 12; i++) {
   $('sky').appendChild(p);
 }
 
+for (let i = 0; i < 3; i++) {
+  const u = document.createElement('u');
+  u.style.cssText = 'left:' + (55 + Math.random() * 40) + '%;top:' + (Math.random() * 35) + '%;animation-delay:' + (i * 2.7) + 's';
+  $('sky').appendChild(u);
+}
+
 /* relógio: o tempo correndo atrás da aliança do futuro */
 for (let i = 0; i < 12; i++) {
   const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -240,12 +264,8 @@ function runClock(){
 }
 $('clockBox').onclick = runClock;
 
-/* selar a promessa */
-$('seal').onclick = () => {
-  $('seal').disabled = true; flash();
-  for (let i = 0; i < 6; i++) setTimeout(() => burst(innerWidth * (.15 + Math.random() * .7), innerHeight * (.25 + Math.random() * .4), 70), i * 380);
-  $('sealed').textContent = CONFIG.sealedText; $('sealed').classList.add('show');
-};
+/* selar a promessa: dispara o grande final */
+$('seal').onclick = () => { $('sealed').textContent = CONFIG.sealedText; $('sealed').classList.add('show'); finale(); };
 
 /* contador: total de horas, minutos, segundos e próximo mêsversário */
 const start = new Date(CONFIG.startDate);
@@ -346,3 +366,75 @@ addEventListener('pointermove', e => {
   const t = performance.now(); if (t - lastT < 90) return; lastT = t;
   burst(e.clientX, e.clientY, 1, true);
 }, { passive: true });
+
+/* ===== grande final: aliança, buquês, chuva de flores e agradecimento ===== */
+const vib = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+for (let i = 0; i < 50; i++) {
+  const s = document.createElement('i'), z = 1 + Math.random() * 2.4;
+  s.style.cssText = 'left:' + Math.random() * 100 + '%;top:' + Math.random() * 100 + '%;width:' + z + 'px;height:' + z + 'px;animation-delay:' + (-Math.random() * 4) + 's';
+  $('fstars').appendChild(s);
+}
+let finaleOn = false, fToken = 0, FS = null;
+function bouquets(){
+  const em = ['💐', '🌹', '🌷', '🌸', '💐', '🌺', '🌻', '🌼'];
+  $('bq').innerHTML = em.map((e, i) => '<span style="--x:' + (3 + i * 12.5) + '%;--d:' + (i * .35).toFixed(2) + 's;--s:' + Math.round(58 + Math.random() * 62) + 'px">' + e + '</span>').join('');
+}
+function dove(top){
+  const d = document.createElement('span'); d.className = 'dove'; d.textContent = '🕊️'; d.style.top = top + '%';
+  $('finale').appendChild(d); setTimeout(() => d.remove(), 9500);
+}
+const fountains = (xs, n) => xs.forEach(f => shoot({ x: W * f, y: H + 10, w: 50, n, vy: -17, sy: 5, sx: 9, r: 42, g: .24, l: 1.6, d: .0045 }));
+const petalRain = () => shoot({ x: Math.random() * W, y: -30, n: 2, vy: 2.6, sy: 1.4, sx: 2.5, r: 26, g: .012, l: 3, d: .0016, sw: 1 });
+
+async function finale(){
+  if (finaleOn) return; finaleOn = true;
+  const t = ++fToken, alive = () => finaleOn && t === fToken, S = FS = { skip: false };
+  const wait = async ms => { const t0 = performance.now(); while (alive() && !S.skip && performance.now() - t0 < ms) await sleep(120); };
+  const F = $('finale'), fr = $('fring');
+  F.hidden = false; F.classList.remove('pray', 'fin'); $('fend').classList.remove('on'); $('ftxt').innerHTML = ''; $('bq').innerHTML = '';
+  document.body.classList.add('lock'); void F.offsetWidth; F.classList.add('on');
+  fr.classList.remove('go'); void fr.offsetWidth; fr.classList.add('go');
+  flash(); vib([90, 50, 90]); burst(W / 2, H / 2, 140);
+  await wait(1900);
+
+  if (alive() && !S.skip) {
+    bouquets();
+    S.fountain = setInterval(() => { if (alive()) fountains([.2, .5, .8], 12); }, 520);
+    S.rain = setInterval(() => { if (alive()) petalRain(); }, 160);
+    await wait(4200);
+    if (alive() && !S.skip) { bouquets(); burst(W / 2, H * .45, 90); vib(60); }
+    await wait(5200);
+  }
+  if (alive() && !S.skip) {
+    clearInterval(S.fountain); clearInterval(S.rain);
+    S.rain = setInterval(() => { if (alive()) shoot({ x: Math.random() * W, y: -30, n: 1, vy: 2.4, sy: 1, sx: 2, r: 22, g: .01, l: 3, d: .0016, sw: 1 }); }, 420);
+    F.classList.add('pray'); dove(62); setTimeout(() => { if (alive()) dove(22); }, 9000);
+    for (const ln of CONFIG.thanks) {
+      if (!alive() || S.skip) break;
+      $('ftxt').innerHTML = '<p class="fl">' + esc(ln.replace('{nome}', CONFIG.herName)) + '</p>';
+      vib(40); await wait(5000);
+    }
+  }
+  if (!alive()) return;
+  clearInterval(S.fountain); clearInterval(S.rain);
+  S.rain = setInterval(() => { if (alive()) petalRain(); }, 160);
+  $('ftxt').innerHTML = ''; F.classList.add('fin'); F.classList.add('pray');
+  $('fTitle').textContent = CONFIG.thanksFinal.replace('{nome}', CONFIG.herName);
+  $('fSign').textContent = CONFIG.thanksSign;
+  $('fend').classList.add('on'); vib([120, 60, 120]);
+  let g = 0;
+  const gi = setInterval(() => {
+    if (!alive() || ++g > 22) return clearInterval(gi);
+    fountains([.15, .5, .85], 10);
+    if (g % 4 === 0) burst(W * (.2 + Math.random() * .6), H * (.2 + Math.random() * .3), 60);
+  }, 230);
+}
+function closeFinale(){
+  finaleOn = false;
+  if (FS) { clearInterval(FS.fountain); clearInterval(FS.rain); }
+  const F = $('finale'); F.classList.remove('on'); document.body.classList.remove('lock');
+  setTimeout(() => { if (!finaleOn) { F.hidden = true; $('bq').innerHTML = ''; } }, 1300);
+}
+$('fClose').onclick = () => { closeFinale(); burst(W / 2, H / 2, 60); };
+$('fAgain').onclick = () => { closeFinale(); setTimeout(finale, 1400); };
+$('fSkip').onclick = () => { if (FS) FS.skip = true; };
