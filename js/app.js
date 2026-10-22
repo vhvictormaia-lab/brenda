@@ -163,7 +163,7 @@ $('bigHeart').onclick = e => {
 function unlock(){
   unlocked = true;
   $('secret').hidden = false;
-  document.querySelectorAll('#ringGallery [data-src]').forEach(el => { el.src = el.dataset.src; });
+  document.querySelectorAll('#ringGallery [data-src]').forEach(el => { el.src = el.dataset.src; if (el.dataset.poster) el.poster = el.dataset.poster; });
   flash(); burst(innerWidth / 2, innerHeight / 2, 160);
   setTimeout(() => burst(innerWidth / 2, innerHeight / 3, 90), 400);
   setTimeout(() => $('secret').scrollIntoView({ behavior: 'smooth' }), 1300);
@@ -179,14 +179,24 @@ if (!CONFIG.rings.length) { $('rTitle').remove(); $('ringGallery').remove(); }
 else {
   $('ringGallery').innerHTML = CONFIG.rings.map((r, i) => {
     const media = /\.(mp4|webm|mov)$/i.test(r.src)
-      ? '<video data-src="' + esc(r.src) + '" controls playsinline preload="metadata"></video>'
+      ? '<video data-src="' + esc(r.src) + '"' + (r.poster ? ' data-poster="' + esc(r.poster) + '"' : '') + ' controls playsinline muted loop preload="metadata"></video>'
       : '<img data-src="' + esc(r.src) + '" alt="' + esc(r.caption || 'Nossas alianças') + '" decoding="async" onerror="this.parentNode.remove()">';
     return '<figure class="rf rv" style="transition-delay:' + (i * 120) + 'ms">' + media + (r.caption ? '<figcaption>' + esc(r.caption) + '</figcaption>' : '') + '</figure>';
   }).join('');
   let resume = false;
+  const sync = v => {
+    const loud = !v.paused && !v.muted && v.volume > 0;   // só pausa a música se o vídeo estiver com som
+    if (loud && !bgm.paused) { bgm.pause(); resume = true; }
+    else if (!loud && resume) { bgm.play().catch(() => {}); resume = false; }
+  };
+  const vio = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting && v.src) v.play().catch(() => {}); else v.pause();   // toca mudo quando aparece, pausa quando sai
+  }), { threshold: .6 });
   document.querySelectorAll('.rf video').forEach(v => {
-    v.onplay = () => { if (!bgm.paused) { bgm.pause(); resume = true; } };
-    v.onpause = () => { if (resume) { bgm.play().catch(() => {}); resume = false; } };
+    v.muted = true;
+    ['play', 'pause', 'ended', 'volumechange'].forEach(ev => v.addEventListener(ev, () => sync(v)));
+    vio.observe(v);
   });
 }
 

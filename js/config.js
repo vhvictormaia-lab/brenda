@@ -34,10 +34,11 @@ const CONFIG = {
   hisName: '',   // seu nome; vazio = o convite mostra "Eu & Brenda"
   secretTitle: 'Você descobriu o nosso segredo',
   secretSub: 'Agora vem a parte que é só nossa: as alianças, as promessas e o futuro que a gente sonha.',
-  rings: [
-    // Coloque fotos e vídeos em assets/rings/ e liste aqui, por exemplo:
-    // { src: 'assets/rings/alianca1.jpg', caption: 'O dia em que as alianças chegaram' },
-    // { src: 'assets/rings/alianca-video.mp4', caption: 'Nosso momento' }
+  rings: [   // fotos e vídeos da página das alianças (pasta assets/rings)
+    { src: 'assets/rings/alianca1.jpg', caption: 'Duas alianças, uma promessa' },
+    { src: 'assets/rings/alianca-video.mp4', poster: 'assets/rings/alianca-video-capa.jpg', caption: 'O nosso momento, em movimento' },
+    { src: 'assets/rings/alianca2.jpg', caption: 'Mãos dadas, alianças no dedo' },
+    { src: 'assets/rings/alianca3.jpg', caption: 'Eu te amo, escrito em cada detalhe' }
   ],
   promises: [
     'Prometo te escolher todos os dias, até nos dias em que for difícil.',
@@ -56,16 +57,19 @@ const CONFIG = {
   inviteDate: 'Data: a gente escolhe junto 💍',
   sealedText: 'Promessa selada. Até o nosso dia, meu amor. 💍',
 
-  musicFile: 'assets/music/nossa-musica.mp3.mp3',
-  photos: [
-    'assets/photos/assetsphotosfoto1.jpg.jpeg',
-    'assets/photos/assetsphotosfoto2.jpg.jpeg',
-    'assets/photos/assetsphotosfoto3.jpg.jpeg',
-    'assets/photos/assetsphotosfoto4.jpg.jpeg',
-    'assets/photos/assetsphotosfoto5.jpg.jpeg',
-    'assets/photos/assetsphotosfoto6.jpg.jpeg',
-    'assets/photos/assetsphotosfoto7.jpg.jpeg',
-    'assets/photos/assetsphotosfoto8.jpg.jpeg'
+  musicFile: 'assets/music/nossa-musica.mp3',
+  photos: [   // galeria principal (pasta assets/photos)
+    'assets/photos/foto01.jpg',
+    'assets/photos/foto02.jpg',
+    'assets/photos/foto03.jpg',
+    'assets/photos/foto04.jpg',
+    'assets/photos/foto05.jpg',
+    'assets/photos/foto06.jpg',
+    'assets/photos/foto07.jpg',
+    'assets/photos/foto08.jpg',
+    'assets/photos/foto09.jpg',
+    'assets/photos/foto10.jpg',
+    'assets/photos/foto11.jpg'
   ]
 };
 /* ================================================================ */
