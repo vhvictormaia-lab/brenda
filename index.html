@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body class="lock">
 <noscript><p style="padding:40px;text-align:center">Ative o JavaScript para ver a surpresa 💕</p></noscript>
@@ -60,6 +60,7 @@
   <section class="rv">
     <h2>Uma carta para você</h2>
     <p class="sub">Escrita com o coração</p>
+    <div class="env2" id="env2" aria-hidden="true"><div class="ebody"></div><div class="eflap"></div><div class="eseal">♥</div></div>
     <p class="letter" id="message"></p>
   </section>
 
@@ -152,7 +153,21 @@
 </main>
 <footer>Feito com todo o meu amor 💕</footer>
 
-<script src="js/config.js?v=6"></script>
-<script src="js/app.js?v=6"></script>
+<div id="finale" hidden>
+  <div class="rays" aria-hidden="true"></div>
+  <div class="fstars" id="fstars" aria-hidden="true"></div>
+  <div id="bq" aria-hidden="true"></div>
+  <div class="fring" id="fring" aria-hidden="true">💍<i class="wv"></i><i class="wv w2"></i></div>
+  <div class="ftxt" id="ftxt" aria-live="polite"></div>
+  <div class="fend" id="fend">
+    <div class="fheart" aria-hidden="true">♥</div>
+    <h2 id="fTitle"></h2>
+    <p id="fSign"></p>
+    <div class="fbtns"><button class="btn gold" id="fAgain" type="button">Reviver 💞</button><button class="btn" id="fClose" type="button">Voltar ao site</button></div>
+  </div>
+  <button id="fSkip" type="button">pular</button>
+</div>
+<script src="js/config.js?v=7"></script>
+<script src="js/app.js?v=7"></script>
 </body>
 </html>
