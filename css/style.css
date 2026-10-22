@@ -213,3 +213,52 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 @media (prefers-reduced-motion:reduce){.hero h1 .ch{opacity:1!important;animation:none!important}}
 
 .rf video{background:#12081c}
+
+/* carta lacrada */
+.env2{position:relative;perspective:600px;width:min(70vw,240px);height:150px;margin:0 auto 30px;transition:opacity .8s,height .9s,margin .9s}
+.ebody{position:absolute;inset:40px 0 0;background:linear-gradient(160deg,#ffd9e0,#ffb3c6);border-radius:8px 8px 14px 14px;box-shadow:0 14px 30px -10px #d6335f88}
+.eflap{position:absolute;left:0;right:0;top:40px;height:74px;background:#ff9db6;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .9s}
+.eseal{position:absolute;left:50%;top:94px;margin-left:-19px;width:38px;height:38px;border-radius:50%;background:#c21f54;color:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .5s;animation:beat 1.4s infinite}
+.env2.open .eflap{transform:rotateX(180deg)}
+.env2.open .eseal{opacity:0}
+.env2.gone{opacity:0;height:0;margin:0;overflow:hidden}
+.letter{opacity:0;transition:opacity .8s}
+.letter.on{opacity:1}
+
+/* estrelas cadentes */
+.sky u{position:absolute;width:90px;height:2px;background:linear-gradient(90deg,#fff,transparent);opacity:0;animation:shoot 8s linear infinite}
+@keyframes shoot{0%{opacity:0;transform:translate(0,0) rotate(-30deg)}3%{opacity:1}11%{opacity:0;transform:translate(-340px,200px) rotate(-30deg)}100%{opacity:0}}
+
+/* GRANDE FINAL */
+#finale{position:fixed;inset:0;z-index:68;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 28%,#4b2a63 0%,#1b0c2c 62%,#0e0618 100%);opacity:0;transition:opacity 1.2s}
+#finale[hidden]{display:none}
+#finale.on{opacity:1}
+.rays{position:absolute;left:50%;top:-25%;width:130vmax;height:130vmax;margin-left:-65vmax;opacity:0;transition:opacity 3s;
+  background:repeating-conic-gradient(from 0deg,#ffe9a866 0 5deg,transparent 5deg 16deg);
+  -webkit-mask-image:radial-gradient(circle,#000 0,transparent 60%);mask-image:radial-gradient(circle,#000 0,transparent 60%)}
+#finale.pray .rays{opacity:.5;animation:rpulse 7s ease-in-out infinite}
+@keyframes rpulse{50%{opacity:.28;transform:scale(1.06)}}
+.fstars i{position:absolute;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+#bq{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#bq span{position:absolute;left:var(--x);bottom:-130px;font-size:var(--s);text-shadow:0 0 30px #ffb3c6;animation:bqrise 7s ease-out var(--d) both}
+@keyframes bqrise{0%{transform:translateY(0) rotate(-10deg) scale(.6);opacity:0}12%{opacity:1}50%{transform:translateY(-58vh) rotate(8deg) scale(1.1)}100%{transform:translateY(-130vh) rotate(-6deg) scale(1);opacity:0}}
+.fring{position:absolute;font-size:clamp(5rem,26vw,9rem);opacity:0;pointer-events:none;text-shadow:0 0 40px #f5c542}
+.fring.go{animation:ringin 3.6s ease both}
+@keyframes ringin{0%{transform:scale(.1) rotate(-200deg);opacity:0}30%{transform:scale(1.15) rotate(0);opacity:1}70%{transform:scale(1);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.fring .wv{position:absolute;inset:-30%;border-radius:50%;border:3px solid #f5c542aa;animation:wave 2.4s ease-out infinite}
+.fring .w2{animation-delay:.8s}
+@keyframes wave{from{transform:scale(.3);opacity:1}to{transform:scale(2.6);opacity:0}}
+.ftxt{position:relative;max-width:560px;min-height:12em;display:flex;align-items:center;justify-content:center}
+.fl{font-family:var(--serif);font-style:italic;font-size:clamp(1.5rem,6vw,2.3rem);line-height:1.4;color:#fff3d6;text-shadow:0 2px 12px #000c,0 0 24px #f5c54288;animation:fline 4.9s ease both}
+@keyframes fline{0%{opacity:0;transform:translateY(18px) scale(.97)}16%{opacity:1;transform:none}84%{opacity:1}100%{opacity:0;transform:translateY(-14px)}}
+.dove{position:absolute;left:0;font-size:3rem;opacity:0;pointer-events:none;animation:dove 9s ease-in-out both}
+@keyframes dove{0%{transform:translate(-15vw,0) rotate(-8deg);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translate(115vw,-20vh) rotate(6deg);opacity:0}}
+.fend{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;opacity:0;pointer-events:none;transition:opacity 1.6s}
+.fend.on{opacity:1;pointer-events:auto}
+.fheart{font-size:clamp(5rem,24vw,8rem);line-height:1;color:#ff5c8a;text-shadow:0 0 40px #ff5c8a;animation:beat 1.3s infinite}
+.fend h2{color:#fff3d6;font-style:italic;font-weight:400;font-size:clamp(2rem,9vw,3.4rem);margin:0}
+.fend p{font-family:var(--serif);color:#f9d976;font-size:1.2rem}
+.fbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+#fSkip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;background:none;border:0;color:#d9b8d0;text-decoration:underline;cursor:pointer;z-index:2}
+#finale.fin #fSkip{display:none}
