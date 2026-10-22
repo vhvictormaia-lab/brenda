@@ -262,3 +262,30 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 .fbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:14px}
 #fSkip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;background:none;border:0;color:#d9b8d0;text-decoration:underline;cursor:pointer;z-index:2}
 #finale.fin #fSkip{display:none}
+
+/* abertura especial */
+#s05{background:radial-gradient(ellipse at 50% 35%,#2a1250 0%,#10061f 75%);justify-content:center}
+.osky{position:absolute;inset:0;overflow:hidden}
+.osky i{position:absolute;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+.oshoot{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.oshoot b{position:absolute;top:12%;right:-10%;width:140px;height:3px;border-radius:3px;background:linear-gradient(90deg,#fff,#ffe9a8,transparent);box-shadow:0 0 14px #ffe9a8;opacity:0}
+.oshoot b.go{animation:meteor 2.2s ease-in both}
+@keyframes meteor{0%{opacity:0;transform:translate(0,0) rotate(-24deg)}12%{opacity:1}100%{opacity:0;transform:translate(-140vw,60vh) rotate(-24deg)}}
+.ol{position:relative;max-width:520px;min-height:4.5em;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-style:italic;font-size:clamp(1.5rem,6vw,2.2rem);line-height:1.4;color:#fff3d6;text-shadow:0 0 22px #ffd98a66}
+.ol span{animation:olin 3.2s ease both}
+@keyframes olin{0%{opacity:0;transform:translateY(16px);filter:blur(6px)}22%{opacity:1;transform:none;filter:none}86%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+.ocon{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;pointer-events:none;transition:opacity 1.2s}
+.ocon.on{opacity:1}
+.ocon svg{width:min(80vw,320px);overflow:visible}
+#consvg .ln{fill:none;stroke:#ffd98a;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 4px #ffd98a)}
+.ocon.on #consvg .ln{animation:draw 4.6s ease-in-out .3s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+#consvg circle{fill:#fff;opacity:0;filter:drop-shadow(0 0 5px #fff)}
+.ocon.on #consvg circle{animation:starin .8s ease forwards,tw 2.4s ease-in-out 2s infinite}
+@keyframes starin{from{opacity:0;r:0}to{opacity:1}}
+.oname{font-family:var(--serif);font-style:italic;font-size:clamp(2.6rem,12vw,4rem);color:#fff3d6;text-shadow:0 0 28px #ffd98a;opacity:0;transform:scale(.9)}
+.ocon.on .oname{animation:nm 1.8s ease 3.4s forwards}
+.odate{letter-spacing:.4em;color:#f9d976;font-size:.95rem;opacity:0}
+.ocon.on .odate{animation:nm 1.8s ease 4.2s forwards}
+@keyframes nm{to{opacity:1;transform:none}}
+.oskip{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:none;border:0;color:#ffffff99;text-decoration:underline;cursor:pointer}
