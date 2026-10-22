@@ -1,43 +1,24 @@
 # Site de declaração
 
-Contador de tempo juntos, mensagem, música e galeria de fotos.
-
-## Estrutura
-
 ```
-site-namorada/
 ├── index.html
 ├── css/style.css
 ├── js/
-│   ├── config.js     → EDITE AQUI: título, data, mensagem, fotos e música
+│   ├── config.js        → EDITE AQUI: nome, data, textos, fotos e vídeos
 │   └── app.js
 └── assets/
-    ├── photos/       → suas fotos
-    └── music/        → sua música (.mp3), opcional
+    ├── photos/          → fotos da galeria principal (foto01.jpg, foto02.jpg...)
+    ├── rings/           → fotos e vídeo da página das alianças (a parte secreta)
+    └── music/           → a música (nossa-musica.mp3)
 ```
 
-## Personalizar
+## Fotos novas
+1. Reduza para no máximo 1600 px no lado maior (squoosh.app) e salve como .jpg, com nome simples, sem espaço nem acento.
+2. Coloque em `assets/photos/` (galeria) ou `assets/rings/` (alianças).
+3. Adicione o caminho na lista `photos` ou `rings` do `js/config.js`.
 
-1. Reduza as fotos (cerca de 1600 px de largura, 300 a 500 KB cada) e copie para `assets/photos/`
-   com nomes simples, em minúsculas e sem acento: `foto1.jpg`, `foto2.jpg`...
-2. Edite `js/config.js`: título, data de início, mensagem e a lista de fotos.
-3. Música: coloque um `.mp3` em `assets/music/` (nome em `musicFile`) ou
-   deixe `musicFile` vazio ('') e cole um link do Spotify/YouTube em `musicUrl`.
+## Depois de qualquer mudança
+Troque o número em `?v=6` (3 linhas no final do `index.html`) para `?v=7`, `?v=8`... assim o celular não usa a versão antiga.
 
 ## Ver no computador
-
-Dentro da pasta do projeto:
-
-```
-python -m http.server 5500
-```
-Abra http://localhost:5500
-
-## Publicar no GitHub Pages
-
-1. Crie um repositório no GitHub (escolha um nome que ela não adivinhe) e envie os arquivos.
-2. Settings → Pages → Build and deployment → Deploy from a branch → `main` / `(root)` → Save.
-3. Em poucos minutos o site fica em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`.
-
-Em repositório público, qualquer pessoa que achar o endereço vê as fotos.
-Use só música que você tenha direito de usar.
+`python -m http.server 5500` dentro da pasta, e abrir http://localhost:5500
