@@ -4,6 +4,18 @@ const CONFIG = {
   title: 'Para o amor da minha vida',
   startDate: '2026-09-10T00:00:00',   // 10 de setembro de 2026 (ano-mês-dia)
 
+  /* abertura especial (antes da pergunta); {nome} vira o nome dela */
+  openLines: [
+    'Antes de qualquer coisa…',
+    'o universo precisou alinhar milhões de coincidências',
+    'só para a minha vida cruzar com a sua.',
+    'E em 10 de setembro, tudo mudou para sempre.'
+  ],
+  wishLine: 'Uma estrela cadente… faça um pedido. 💫',
+  openAfter: 'Mas o meu pedido já foi atendido: foi você.',
+  openName: '{nome}',
+  openDate: '10 · 09 · 2026',
+
   /* pergunta da abertura */
   askText: 'Desde 10 de setembro o meu mundo ficou mais bonito, mais leve e muito mais feliz. Você é a minha paz, a minha alegria e o meu melhor pedaço de futuro.',
   askQuestion: 'Você aceita continuar sendo a razão do meu sorriso, hoje e todos os dias?',
@@ -32,8 +44,9 @@ const CONFIG = {
 
   /* ===== SEGREDO: aparece depois de tocar 5 vezes no coração do final ===== */
   hisName: '',   // seu nome; vazio = o convite mostra "Eu & Brenda"
-  secretTitle: 'Você descobriu o nosso segredo',
-  secretSub: 'Agora vem a parte que é só nossa: as alianças, as promessas e o futuro que a gente sonha.',
+  secretKicker: 'para sempre começa aqui',
+  secretTitle: 'O nosso futuro',
+  secretSub: 'As alianças, as promessas e o futuro que a gente sonha viver juntos.',
   rings: [   // fotos e vídeos da página das alianças (pasta assets/rings)
     { src: 'assets/rings/alianca1.jpg', caption: 'Duas alianças, uma promessa' },
     { src: 'assets/rings/alianca-video.mp4', poster: 'assets/rings/alianca-video-capa.jpg', caption: 'O nosso momento, em movimento' },

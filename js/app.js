@@ -15,6 +15,7 @@ $('title').setAttribute('aria-label', CONFIG.title);
 $('title').innerHTML = CONFIG.title.split(' ').map(w => '<span class="w" aria-hidden="true">' +
   [...w].map(c => '<span class="ch" style="--i:' + (ci++) + '">' + esc(c) + '</span>').join('') + '</span>').join(' ');
 $('since').textContent = 'Juntos desde ' + fmtDate(CONFIG.startDate);
+$('sKicker').textContent = CONFIG.secretKicker;
 $('askName').textContent = CONFIG.herName + ',';
 $('askText').textContent = CONFIG.askText;
 $('askQ').textContent = CONFIG.askQuestion;
@@ -112,9 +113,45 @@ $('sound').onclick = () => {
 /* sequência da abertura */
 const show = id => document.querySelectorAll('.stage').forEach(s => s.classList.toggle('on', s.id === id));
 let started = false;
+/* abertura especial: céu, frases, estrela cadente e coração de constelação */
+async function openingScene(){
+  const S0 = { skip: false };
+  const w = async ms => { const t0 = performance.now(); while (!S0.skip && performance.now() - t0 < ms) await sleep(100); };
+  const line = t => { $('ol').innerHTML = '<span>' + esc(t.replace('{nome}', CONFIG.herName)) + '</span>'; };
+  $('oskip').onclick = () => { S0.skip = true; };
+  for (let i = 0; i < (LOW ? 30 : 60); i++) {
+    const s = document.createElement('i'), z = 1 + Math.random() * 2.4;
+    s.style.cssText = 'left:' + Math.random() * 100 + '%;top:' + Math.random() * 100 + '%;width:' + z + 'px;height:' + z + 'px;animation-delay:' + (-Math.random() * 4) + 's';
+    $('osky').appendChild(s);
+  }
+  const N = 26, pts = [];
+  for (let k = 0; k <= N; k++) {
+    const t = k / N * Math.PI * 2;
+    pts.push([100 + 16 * Math.pow(Math.sin(t), 3) * 5.4, 80 - (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * 5.2]);
+  }
+  $('consvg').innerHTML = '<path class="ln" pathLength="1" d="M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('L') + '"/>' +
+    pts.slice(0, N).map((p, k) => '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + (k % 5 ? 1.8 : 2.8) + '" style="animation-delay:' + (.3 + k / N * 4.4).toFixed(2) + 's"/>').join('');
+  $('oname').textContent = CONFIG.openName.replace('{nome}', CONFIG.herName);
+  $('odate').textContent = CONFIG.openDate;
+  show('s05');
+  for (const t of CONFIG.openLines) { if (S0.skip) break; line(t); vib(25); await w(3200); }
+  if (!S0.skip) {                                           // estrela cadente e pedido
+    const m = document.createElement('b'); $('oshoot').appendChild(m); void m.offsetWidth; m.classList.add('go');
+    line(CONFIG.wishLine); await w(3600);
+  }
+  if (!S0.skip) { line(CONFIG.openAfter); await w(3000); }
+  if (!S0.skip) {                                           // coração de constelação com o nome
+    $('ol').innerHTML = ''; $('ocon').classList.add('on'); vib([40, 60, 40]);
+    await w(7200);
+  }
+  $('ocon').classList.remove('on'); $('oskip').style.display = 'none';
+  await sleep(S0.skip ? 100 : 900);
+}
+
 async function sequence(){
   if (started) return; started = true;
   try {
+    if (!RM) await openingScene();
     show('s1'); await sleep(RM ? 700 : 2800);
     if (!RM) {
       show('s2'); $('bomb').classList.add('arm'); await sleep(3700);
