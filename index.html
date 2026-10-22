@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=7">
+<link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body class="lock">
 <noscript><p style="padding:40px;text-align:center">Ative o JavaScript para ver a surpresa 💕</p></noscript>
@@ -24,6 +24,17 @@
     <div class="env" aria-hidden="true">💌</div>
     <h1>Tem uma surpresa para você</h1>
     <button class="btn" id="openBtn" type="button">Toque para abrir</button>
+  </div>
+  <div class="stage" id="s05">
+    <div class="osky" id="osky" aria-hidden="true"></div>
+    <div class="oshoot" id="oshoot" aria-hidden="true"></div>
+    <p class="ol" id="ol" aria-live="polite"></p>
+    <div class="ocon" id="ocon" aria-hidden="true">
+      <svg viewBox="0 0 200 190" id="consvg"></svg>
+      <p class="oname" id="oname"></p>
+      <p class="odate" id="odate"></p>
+    </div>
+    <button class="oskip" id="oskip" type="button">pular</button>
   </div>
   <div class="stage" id="s1">
     <p class="prep">Preparando a surpresa…</p>
@@ -84,8 +95,8 @@
   </section>
 
   <section>
-    <h2 class="rv">Abra quando…</h2>
-    <p class="sub rv">Pequenas cartas para cada momento</p>
+    <h2 class="rv">Abra quando estiver nesses momentos</h2>
+    <p class="sub rv">Uma cartinha para cada momento do seu coração</p>
     <div id="letters" class="letters"></div>
   </section>
 
@@ -114,7 +125,7 @@
   <div class="secret" id="secret" hidden>
     <div class="sky" id="sky" aria-hidden="true"></div>
     <div class="sc">
-      <p class="kicker rv">só nós dois sabemos</p>
+      <p class="kicker rv" id="sKicker"></p>
       <h2 class="rv" id="sTitle"></h2>
       <div class="rv ringsw">
         <svg viewBox="0 0 200 110" aria-hidden="true">
@@ -167,7 +178,7 @@
   </div>
   <button id="fSkip" type="button">pular</button>
 </div>
-<script src="js/config.js?v=7"></script>
-<script src="js/app.js?v=7"></script>
+<script src="js/config.js?v=8"></script>
+<script src="js/app.js?v=8"></script>
 </body>
 </html>
