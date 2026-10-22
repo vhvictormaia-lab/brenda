@@ -7,12 +7,14 @@ const CONFIG = {
   /* abertura especial (antes da pergunta); {nome} vira o nome dela */
   openLines: [
     'Antes de qualquer coisa…',
-    'o universo precisou alinhar milhões de coincidências',
-    'só para a minha vida cruzar com a sua.',
+    'eu preciso agradecer a Deus,',
+    'porque Ele, no tempo perfeito,',
+    'colocou você no meu caminho.',
     'E em 10 de setembro, tudo mudou para sempre.'
   ],
-  wishLine: 'Uma estrela cadente… faça um pedido. 💫',
-  openAfter: 'Mas o meu pedido já foi atendido: foi você.',
+  godLine: 'Eu sei que não foi coincidência. Foi Deus. 🕊️',
+  verse: 'Achou o bem aquele que acha uma esposa, e alcançou a benevolência do Senhor.',
+  verseRef: 'Provérbios 18:22',
   openName: '{nome}',
   openDate: '10 · 09 · 2026',
 
@@ -43,7 +45,7 @@ const CONFIG = {
   finalMessage: 'Eu não sei tudo o que o futuro guarda, mas sei com quem eu quero viver cada parte dele. Obrigado por existir na minha vida.',
 
   /* ===== SEGREDO: aparece depois de tocar 5 vezes no coração do final ===== */
-  hisName: '',   // seu nome; vazio = o convite mostra "Eu & Brenda"
+  hisName: 'Victor',   // seu nome (aparece no convite: Victor & Brenda)
   secretKicker: 'para sempre começa aqui',
   secretTitle: 'O nosso futuro',
   secretSub: 'As alianças, as promessas e o futuro que a gente sonha viver juntos.',

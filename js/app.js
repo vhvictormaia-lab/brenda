@@ -113,7 +113,7 @@ $('sound').onclick = () => {
 /* sequência da abertura */
 const show = id => document.querySelectorAll('.stage').forEach(s => s.classList.toggle('on', s.id === id));
 let started = false;
-/* abertura especial: céu, frases, estrela cadente e coração de constelação */
+/* abertura especial: céu, frases, luz do alto e coração de constelação */
 async function openingScene(){
   const S0 = { skip: false };
   const w = async ms => { const t0 = performance.now(); while (!S0.skip && performance.now() - t0 < ms) await sleep(100); };
@@ -135,13 +135,15 @@ async function openingScene(){
   $('odate').textContent = CONFIG.openDate;
   show('s05');
   for (const t of CONFIG.openLines) { if (S0.skip) break; line(t); vib(25); await w(3200); }
-  if (!S0.skip) {                                           // estrela cadente e pedido
-    const m = document.createElement('b'); $('oshoot').appendChild(m); void m.offsetWidth; m.classList.add('go');
-    line(CONFIG.wishLine); await w(3600);
+  if (!S0.skip) {                                           // luz do céu, pomba e versículo
+    $('obeam').classList.add('on');
+    const d = document.createElement('span'); d.className = 'dove'; d.textContent = '🕊️'; d.style.top = '16%';
+    $('s05').appendChild(d); setTimeout(() => d.remove(), 9500);
+    line(CONFIG.godLine); await w(4000);
   }
-  if (!S0.skip) { line(CONFIG.openAfter); await w(3000); }
+  if (!S0.skip) { $('ol').innerHTML = '<span class="vs">' + esc(CONFIG.verse) + '<small>' + esc(CONFIG.verseRef) + '</small></span>'; await w(5600); }
   if (!S0.skip) {                                           // coração de constelação com o nome
-    $('ol').innerHTML = ''; $('ocon').classList.add('on'); vib([40, 60, 40]);
+    $('ol').innerHTML = ''; $('obeam').classList.remove('on'); $('ocon').classList.add('on'); vib([40, 60, 40]);
     await w(7200);
   }
   $('ocon').classList.remove('on'); $('oskip').style.display = 'none';
@@ -226,7 +228,7 @@ function unlock(){
 
 $('sTitle').textContent = CONFIG.secretTitle;
 $('sSub').textContent = CONFIG.secretSub;
-$('invNames').textContent = (CONFIG.hisName || 'Eu') + ' & ' + CONFIG.herName;
+$('invNames').textContent = CONFIG.hisName ? CONFIG.hisName + ' & ' + CONFIG.herName : 'Nós dois ♥';
 $('invLine').textContent = CONFIG.inviteLine;
 $('invDate').textContent = CONFIG.inviteDate;
 $('promises').innerHTML = CONFIG.promises.map((t, i) => '<p class="pm rv" style="transition-delay:' + (i * 80) + 'ms">' + esc(t) + '</p>').join('');
@@ -266,12 +268,6 @@ for (let i = 0; i < 12; i++) {
   p.textContent = i % 3 ? '🌸' : '♥';
   p.style.cssText = 'left:' + Math.random() * 100 + '%;font-size:' + (14 + Math.random() * 14) + 'px;animation-duration:' + (10 + Math.random() * 10) + 's;animation-delay:' + (-Math.random() * 14) + 's';
   $('sky').appendChild(p);
-}
-
-for (let i = 0; i < 3; i++) {
-  const u = document.createElement('u');
-  u.style.cssText = 'left:' + (55 + Math.random() * 40) + '%;top:' + (Math.random() * 35) + '%;animation-delay:' + (i * 2.7) + 's';
-  $('sky').appendChild(u);
 }
 
 /* relógio: o tempo correndo atrás da aliança do futuro */
