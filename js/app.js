@@ -1084,8 +1084,8 @@ $('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
     a.after(sec);
     const psiu = sec.querySelector('.psiu'), tz = sec.querySelector('.teaser'), box = sec.querySelector('.sbox'), b = sec.querySelector('.sbtn');
     new IntersectionObserver((es, io) => { if (!es[0].isIntersecting) return; io.disconnect();
-      setTimeout(() => { psiu.classList.add('on'); sfx.sparkle(); vib(25); }, 3200);
-      setTimeout(() => { tz.classList.add('on'); box.classList.add('on'); sfx.chime(); }, 5600); }, { threshold: .7 }).observe(sec);
+      setTimeout(() => { psiu.classList.add('on'); sfx.sparkle(); vib(25); }, 1100);
+      setTimeout(() => { tz.classList.add('on'); box.classList.add('on'); sfx.chime(); vib([40, 30, 40]); }, 2300); }, { threshold: .7 }).observe(sec);
     b.onclick = once(sec, async () => {
       b.classList.add('wait'); b.innerHTML = esc(FE.wait || 'Aguarde') + ' <span class="dts"><i></i><i></i><i></i></span>';
       for (let i = 3; i > 0; i--) { sfx.tick(); sfx.heart(); await sleep(900); }

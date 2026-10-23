@@ -513,8 +513,8 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 /* fim falso e vales */
 .fakeend .fimtxt{font:italic 500 clamp(2.4rem,11vw,4rem) var(--serif);color:var(--muted)}
 .fakeend .fimsub{color:var(--muted);margin-top:6px}
-.fakeend .psiu,.fakeend .teaser,.fakeend .sbox{opacity:0;transition:opacity 1.2s;min-height:1px}
-.fakeend .psiu{margin-top:50px;font-style:italic;color:var(--accent)}
+.fakeend .psiu,.fakeend .teaser,.fakeend .sbox{opacity:0;transition:opacity .7s;min-height:1px}
+.fakeend .psiu{margin-top:34px;font-style:italic;color:var(--accent)}
 .fakeend .teaser{font:italic 500 clamp(1.5rem,6vw,2.1rem) var(--serif);margin:18px 0 20px}
 .fakeend .on{opacity:1}
 .cups{display:grid;gap:12px;max-width:420px;margin:22px auto 0}
