@@ -535,3 +535,12 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 @keyframes flap{0%,100%{transform:rotate(-8deg) scaleY(1)}50%{transform:rotate(14deg) scaleY(-.85)}}
 @keyframes dbob{50%{transform:translateY(-9px)}}
 @media (prefers-reduced-motion:reduce){.dove .wn,.dove .wf{animation-duration:1.2s}}
+
+.gate{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(88vw,340px)}
+.gate label{font-size:1.05rem;line-height:1.4;text-align:center}
+.gate input{width:100%;padding:13px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:inherit;font-size:1.05rem;text-align:center;outline:none}
+.gate input:focus{border-color:var(--accent)}
+.gerr{min-height:1.3em;font-size:.95rem;opacity:.9}
+.gate.shake{animation:gshake .4s}
+@keyframes gshake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#openBtn[hidden],.gate[hidden]{display:none}

@@ -170,6 +170,19 @@ async function sequence(){
   show('s3');
 }
 $('openBtn').onclick = () => { startMusic(); sequence(); };
+(function(){
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+  const ok = (CONFIG.gate && CONFIG.gate.answers) || ['tamara'];
+  const g = $('gate'), unlock = () => { g.hidden = true; $('openBtn').hidden = false; };
+  g.onsubmit = e => {
+    e.preventDefault();
+    const v = norm($('gIn').value);
+    if (v && ok.some(x => v === x || v === x + 's')) { try { localStorage.setItem('gateOk', '1'); } catch(_){} unlock(); return; }
+    $('gErr').textContent = (CONFIG.gate && CONFIG.gate.wrong) || 'Hmm, não foi essa… tente de novo 💕';
+    g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake');
+  };
+  try { if (localStorage.getItem('gateOk') === '1') unlock(); } catch(_){}
+})();
 startMusic().then(ok => { if (ok || !CONFIG.musicFile) sequence(); });
 
 $('yes').onclick = async e => {

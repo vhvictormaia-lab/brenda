@@ -1,5 +1,7 @@
 /* ====== EDITE AQUI: nome, data, textos, fotos e música ====== */
 const CONFIG = {
+  // Pergunta antes de abrir. Respostas aceitas (sem acento, minúsculas):
+  gate: { answers: ['tamara'], wrong: 'Hmm, não foi essa… tente de novo 💕' },
   herName: 'Brenda',
   title: 'Para o amor da minha vida',
   startDate: '2026-09-10T00:00:00',   // 10 de setembro de 2026 (ano-mês-dia)

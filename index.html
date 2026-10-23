@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=24">
+<link rel="stylesheet" href="css/style.css?v=25">
 </head>
 <body class="lock">
 <noscript><p style="padding:40px;text-align:center">Ative o JavaScript para ver a surpresa 💕</p></noscript>
@@ -35,7 +35,13 @@
   <div class="stage on" id="s0">
     <div class="env" aria-hidden="true">💌</div>
     <h1>Tem uma surpresa para você</h1>
-    <button class="btn" id="openBtn" type="button">Toque para abrir</button>
+    <form class="gate" id="gate" autocomplete="off">
+      <label for="gIn" id="gQ">Antes de abrir: qual é a sua fruta preferida? 🍇</label>
+      <input id="gIn" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Digite aqui">
+      <p class="gerr" id="gErr" aria-live="polite"></p>
+      <button class="btn" type="submit">Confirmar</button>
+    </form>
+    <button class="btn" id="openBtn" type="button" hidden>Toque para abrir</button>
   </div>
   <div class="stage" id="s05">
     <div class="osky" id="osky" aria-hidden="true"></div>
@@ -224,7 +230,7 @@
   </div>
   <button id="d10skip" type="button">pular</button>
 </div>
-<script src="js/config.js?v=24"></script>
-<script src="js/app.js?v=24"></script>
+<script src="js/config.js?v=25"></script>
+<script src="js/app.js?v=25"></script>
 </body>
 </html>
