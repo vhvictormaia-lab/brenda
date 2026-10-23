@@ -476,6 +476,7 @@ function closeFinale(){
 }
 $('fClose').onclick = () => {            // "Fim": fecha o agradecimento e leva ela para a última surpresa
   closeFinale(); burst(W / 2, H / 2, 60);
+  const fe0 = document.querySelector('.fakeend'); if (fe0) fe0.hidden = false;   // a página do FIM aparece agora
   const go = () => { const fe = document.querySelector('.fakeend'); if (fe) fe.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   setTimeout(go, 500); setTimeout(go, 1300);
 };
@@ -1079,6 +1080,7 @@ $('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
   if (FE) {
     const a = document.getElementById('secret') || document.getElementById('fim'); if (!a) return;
     const sec = mk('sur fakeend', '<p class="fimtxt">' + esc(fl(FE.fim)) + '</p><p class="fimsub">' + esc(fl(FE.fimSub)) + '</p><p class="psiu">' + esc(fl(FE.psiu)) + '</p><p class="teaser">' + esc(fl(FE.teaser)) + '</p><div class="sbox"><button class="sbtn" type="button">' + esc(FE.hint || 'Toque aqui') + '</button></div><div class="sres"></div>');
+    sec.hidden = true;            // só aparece depois de selar a promessa e tocar em "Fim"
     a.after(sec);
     const psiu = sec.querySelector('.psiu'), tz = sec.querySelector('.teaser'), box = sec.querySelector('.sbox'), b = sec.querySelector('.sbtn');
     new IntersectionObserver((es, io) => { if (!es[0].isIntersecting) return; io.disconnect();
