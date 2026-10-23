@@ -170,6 +170,35 @@ const CONFIG = {
     finalSign: 'Eu te amo, {nome}'
   },
 
+  /* ===== SURPRESAS ESCONDIDAS no site (ela vai achando enquanto desce a tela) =====
+     after: depois de qual parte aparece (hero, nums, motivos, abra, momentos)
+     type: toque (toque e aguarde) | espere (contagem, não pode tocar antes) | segure (segurar o coração) | toques (tocar N vezes)
+     photo: número da foto da lista "photos" (0 = primeira) */
+  surprises: [
+    { after: 'hero', type: 'toque', kicker: 'Surpresa 1', hint: 'Toque aqui 👆', wait: 'Aguarde…', photo: 2,
+      text: 'Olha só esse sorriso… foi ele que me conquistou. 💖' },
+    { after: 'nums', type: 'espere', kicker: 'Surpresa 2', hint: 'Não toque ainda…', go: 'Agora pode! 💖', seconds: 5,
+      text: 'Eu avisei para esperar! Valeu a pena? 😏 Ganhou um abraço apertado de presente. 🤗' },
+    { after: 'motivos', type: 'segure', kicker: 'Surpresa 3', hint: 'Segure o coração 💗', photo: 4,
+      text: 'Um segredo: eu me apaixono por você de novo toda vez que você ri.' },
+    { after: 'abra', type: 'toques', n: 3, kicker: 'Surpresa 4', hint: 'Toque 3 vezes no coração', photo: 6,
+      text: 'Três toques, três vezes eu te digo: eu te amo, eu te amo, eu te amo! 💕' },
+    { after: 'momentos', type: 'toque', kicker: 'Surpresa 5', hint: 'Tem mais… toque aqui 👀', wait: 'Aguarde, vem coisa linda…', photo: 8,
+      text: 'Você achou que era só isso? 😏 Ainda tem mais lá embaixo…' }
+  ],
+  /* o "FIM" falso: ela acha que acabou, e ainda tem mais */
+  fakeEnd: {
+    fim: 'FIM 💕', fimSub: 'Obrigado por ter visto tudo até aqui.', psiu: 'psiu… 👀',
+    teaser: 'Achou que tinha acabado? 😏', hint: 'Toque aqui', wait: 'Aguarde',
+    coupons: [
+      { icon: '🍽️', t: 'Vale um jantar a dois', d: 'Você escolhe o lugar e eu pago. 😉' },
+      { icon: '🤗', t: 'Vale um abraço apertado', d: 'Pode usar quando quiser, sem prazo de validade.' },
+      { icon: '👑', t: 'Vale um dia de rainha', d: 'Hoje você manda em tudo. Eu obedeço. 😅' },
+      { icon: '🙏', t: 'Vale uma oração juntos', d: 'Para agradecer a Deus por tudo o que Ele tem feito por nós.' }
+    ],
+    last: 'Agora sim, acabou… por enquanto. Eu te amo, {nome}. 💖'
+  },
+
   musicFile: 'assets/music/nossa-musica.mp3',
   photos: [   // galeria principal (pasta assets/photos)
     'assets/photos/foto01.jpg',

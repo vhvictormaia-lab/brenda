@@ -1018,3 +1018,80 @@ function closeDia10(){
 }
 $('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
 $('d10Again').onclick = () => { const m = D10LAST; closeDia10(); setTimeout(() => dia10(m), 1400); };
+
+
+/* ===== surpresas escondidas pelo site principal ===== */
+(function(){
+  const SU = CONFIG.surprises || [], FE = CONFIG.fakeEnd || null, total = SU.length + (FE ? 1 : 0);
+  if (!total) return;
+  let found = 0;
+  const fl = t => String(t || '').replace(/\{nome\}/g, CONFIG.herName), ph = CONFIG.photos || [], trk = $('sTrack');
+  const mark = () => { found++; trk.hidden = false; trk.textContent = '💝 ' + found + '/' + total + ' surpresas'; trk.classList.remove('pop'); void trk.offsetWidth; trk.classList.add('pop'); };
+  const polHTML = i => (i != null && ph.length) ? '<div class="spol"><i class="tape"></i><img alt="" loading="lazy" src="' + esc(ph[i % ph.length]) + '"></div>' : '';
+  const mid = sec => { const r = sec.getBoundingClientRect(); return Math.min(innerHeight * .6, Math.max(120, r.top + r.height / 2)); };
+  const mk = (cls, html) => { const s = document.createElement('section'); s.className = cls; s.innerHTML = html; return s; };
+  const winEffects = (sec, big) => { sfx.harp([523, 659, 784, 1047], .12); sfx.chime(.3); flash(); vib([60, 40, 60]); burst(innerWidth / 2, mid(sec), big ? 90 : 55);
+    shoot({ x: innerWidth / 2, y: mid(sec), n: big ? 40 : 22, sx: 12, sy: 10, r: 24, l: 2, sp: SPR_BLOOM }); };
+  function reveal(sec, o){
+    const r = sec.querySelector('.sres');
+    r.innerHTML = polHTML(o.photo) + '<p class="stx">' + esc(fl(o.text)) + '</p>';
+    sec.querySelector('.sbox').style.display = 'none'; sec.querySelector('.sk').textContent = '✨ ' + (o.kicker || 'Surpresa') + ' ✨';
+    void r.offsetWidth; r.classList.add('on'); mark(); winEffects(sec);
+    setTimeout(() => r.scrollIntoView({ behavior: 'smooth', block: 'center' }), 250);
+  }
+  const once = (sec, fn) => async e => { if (sec.dataset.busy) return; sec.dataset.busy = '1'; try { await fn(e); } catch (x) { console.warn(x); } };
+  const TYPES = {
+    toque(sec, o){ const b = sec.querySelector('.sbtn');
+      b.onclick = once(sec, async () => { b.classList.add('wait'); b.innerHTML = esc(o.wait || 'Aguarde…') + ' <span class="dts"><i></i><i></i><i></i></span>';
+        for (let i = 0; i < 4; i++) { sfx.heart(); vib(20); await sleep(700); } reveal(sec, o); }); },
+    espere(sec, o){ const b = sec.querySelector('.sbtn'), hint = sec.querySelector('.shint'); let n = o.seconds || 5, ready = false, started = false;
+      b.classList.add('nope'); b.textContent = (o.hint || 'Não toque ainda…') + ' ' + n;
+      const start = () => { if (started) return; started = true; const iv = setInterval(() => { n--; if (n > 0) { b.textContent = (o.hint || 'Não toque ainda…') + ' ' + n; sfx.tick(); return; }
+        clearInterval(iv); ready = true; b.classList.remove('nope'); b.textContent = o.go || 'Agora pode! 💖'; sfx.chime(); vib(40); hint.textContent = ''; }, 1000); };
+      new IntersectionObserver((es, io) => { if (es[0].isIntersecting) { io.disconnect(); start(); } }, { threshold: .6 }).observe(sec);
+      const early = ['Ei! Ainda não! 😏', 'Tenha paciência, meu amor… 💞', 'Quase lá! Respira… 😅'];
+      b.onclick = once2(sec, () => { if (!ready) { b.classList.remove('shk'); void b.offsetWidth; b.classList.add('shk'); hint.textContent = early[Math.floor(Math.random() * early.length)]; vib(30); sfx.click(); return false; } return true; }, () => reveal(sec, o)); },
+    segure(sec, o){ const b = sec.querySelector('.sbtn'), hint = sec.querySelector('.shint'); let t0 = 0, raf = 0, done = false;
+      b.addEventListener('contextmenu', e => e.preventDefault());
+      const step = () => { const p = Math.min(1, (performance.now() - t0) / 2000); b.style.setProperty('--p', p * 100);
+        if (p >= 1) { done = true; cancelAnimationFrame(raf); reveal(sec, o); return; } raf = requestAnimationFrame(step); };
+      let lastB = 0; const beat = () => { if (!t0 || done) return; if (performance.now() - lastB > 450) { lastB = performance.now(); sfx.heart(); vib(15); } requestAnimationFrame(beat); };
+      b.addEventListener('pointerdown', e => { if (done) return; e.preventDefault(); t0 = performance.now(); hint.textContent = ''; step(); beat(); });
+      const stop = () => { if (done || !t0) return; t0 = 0; cancelAnimationFrame(raf); b.style.setProperty('--p', 0); hint.textContent = 'Segure mais um pouquinho… 💗'; };
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop)); },
+    toques(sec, o){ const b = sec.querySelector('.sbtn'), hint = sec.querySelector('.shint'); let left = o.n || 3;
+      b.onclick = () => { if (left <= 0) return; left--; sfx.pop(); sfx.note(3 - left); vib(30);
+        const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 18, true);
+        b.classList.remove('shk'); void b.offsetWidth; b.classList.add('shk');
+        if (left > 0) hint.textContent = 'Mais ' + left + (left === 1 ? ' toque…' : ' toques…'); else { sec.dataset.busy = '1'; reveal(sec, o); } }; }
+  };
+  function once2(sec, gate, go){ return () => { if (sec.dataset.busy) return; if (gate() === false) return; sec.dataset.busy = '1'; go(); }; }
+  SU.forEach(o => {
+    const a = document.getElementById(o.after); if (!a) return;
+    const isBig = o.type === 'toques', isHold = o.type === 'segure';
+    const btn = isHold ? '<button class="sbtn hold" type="button" aria-label="Segure"><span>💗</span></button>' : isBig ? '<button class="sbtn big" type="button" aria-label="Toque">💗</button>' : '<button class="sbtn" type="button">' + esc(o.hint || 'Toque aqui') + '</button>';
+    const sec = mk('sur', '<p class="sk">' + esc(o.kicker || 'Uma surpresa escondida') + '</p><div class="sbox">' + btn + '<p class="shint">' + ((isHold || isBig) ? esc(o.hint || '') : '') + '</p></div><div class="sres"></div>');
+    a.after(sec); (TYPES[o.type] || TYPES.toque)(sec, o);
+  });
+  /* o FIM falso: parece que acabou, mas ainda tem mais */
+  if (FE) {
+    const a = document.getElementById('fim'); if (!a) return;
+    const sec = mk('sur fakeend', '<p class="fimtxt">' + esc(fl(FE.fim)) + '</p><p class="fimsub">' + esc(fl(FE.fimSub)) + '</p><p class="psiu">' + esc(fl(FE.psiu)) + '</p><p class="teaser">' + esc(fl(FE.teaser)) + '</p><div class="sbox"><button class="sbtn" type="button">' + esc(FE.hint || 'Toque aqui') + '</button></div><div class="sres"></div>');
+    a.after(sec);
+    const psiu = sec.querySelector('.psiu'), tz = sec.querySelector('.teaser'), box = sec.querySelector('.sbox'), b = sec.querySelector('.sbtn');
+    new IntersectionObserver((es, io) => { if (!es[0].isIntersecting) return; io.disconnect();
+      setTimeout(() => { psiu.classList.add('on'); sfx.sparkle(); vib(25); }, 3200);
+      setTimeout(() => { tz.classList.add('on'); box.classList.add('on'); sfx.chime(); }, 5600); }, { threshold: .7 }).observe(sec);
+    b.onclick = once(sec, async () => {
+      b.classList.add('wait'); b.innerHTML = esc(FE.wait || 'Aguarde') + ' <span class="dts"><i></i><i></i><i></i></span>';
+      for (let i = 3; i > 0; i--) { sfx.tick(); sfx.heart(); await sleep(900); }
+      const r = sec.querySelector('.sres'); r.innerHTML = '<div class="cups" id="cups"></div><p class="stx" id="cupLast" style="opacity:0;transition:opacity 1.2s"></p>'; r.classList.add('on');
+      box.style.display = 'none'; tz.textContent = '🎟️ Seus vales especiais'; sfx.pad(330); flash();
+      const cups = $('cups'); let i = 0;
+      for (const cp of (FE.coupons || [])) { const d = document.createElement('div'); d.className = 'cup'; d.innerHTML = '<span class="ci">' + esc(cp.icon || '🎟️') + '</span><div><b>' + esc(fl(cp.t)) + '</b><span>' + esc(fl(cp.d)) + '</span></div>'; cups.appendChild(d);
+        sfx.note(i++); vib(25); burst(innerWidth / 2, Math.min(innerHeight * .6, d.getBoundingClientRect().top + 30), 12, true); d.scrollIntoView({ behavior: 'smooth', block: 'center' }); await sleep(1700); }
+      const last = $('cupLast'); last.textContent = fl(FE.last); last.style.opacity = 1; mark(); winEffects(sec, true); fountains([.15, .85], 10);
+      setTimeout(() => last.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    });
+  }
+})();

@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=16">
 </head>
 <body class="lock">
 <noscript><p style="padding:40px;text-align:center">Ative o JavaScript para ver a surpresa 💕</p></noscript>
@@ -66,6 +66,7 @@
   </div>
 </div>
 
+<div id="sTrack" class="strack" hidden aria-live="polite"></div>
 <button id="sound" type="button" aria-label="Ligar ou desligar o som">🔊</button>
 
 <main id="site">
@@ -80,6 +81,7 @@
     <p class="total" id="total"></p>
     <div class="gwrap"><button class="gift" id="gift" type="button"><span class="gb" aria-hidden="true">🎁</span><span id="giftTxt"></span></button></div>
     <button class="mlink" id="mlink" type="button" hidden>💞 Nossos meses <span aria-hidden="true">↓</span></button>
+    <p class="dica" id="dica">Desça a tela devagar… tem surpresas escondidas pelo caminho <span aria-hidden="true">👇</span></p>
   </header>
 
   <section class="rv" id="meses" hidden>
@@ -109,19 +111,19 @@
     <p class="moni" id="moni"></p>
   </section>
 
-  <section>
+  <section id="motivos">
     <h2 class="rv">Motivos pelos quais eu te amo</h2>
     <p class="sub rv">Só alguns, porque seriam infinitos</p>
     <div id="reasons"></div>
   </section>
 
-  <section>
+  <section id="abra">
     <h2 class="rv">Abra quando estiver nesses momentos</h2>
     <p class="sub rv">Uma cartinha para cada momento do seu coração</p>
     <div id="letters" class="letters"></div>
   </section>
 
-  <section class="rv">
+  <section class="rv" id="momentos">
     <h2>Nossos momentos</h2>
     <p class="sub">Memórias que guardamos no coração</p>
     <div class="car" id="car">
@@ -135,7 +137,7 @@
     <div class="thumbs" id="thumbs"></div>
   </section>
 
-  <section class="final rv">
+  <section class="final rv" id="fim">
     <button class="bigheart" id="bigHeart" type="button" aria-label="Soltar corações">♥</button>
     <h2 class="te">Eu te amo</h2>
     <p class="fm" id="finalText"></p>
@@ -222,7 +224,7 @@
   </div>
   <button id="d10skip" type="button">pular</button>
 </div>
-<script src="js/config.js?v=15"></script>
-<script src="js/app.js?v=15"></script>
+<script src="js/config.js?v=16"></script>
+<script src="js/app.js?v=16"></script>
 </body>
 </html>

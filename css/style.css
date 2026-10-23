@@ -479,3 +479,50 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 
 .mlink{display:block;margin:14px auto 0;background:none;border:1.5px solid var(--accent);color:var(--accent);font:500 1rem var(--sans);padding:9px 20px;border-radius:99px;cursor:pointer}
 .mlink:active{transform:scale(.97)}
+
+/* dica no topo + contador de surpresas */
+.dica{margin-top:16px;text-align:center;color:var(--muted);font-style:italic;font-size:.98rem;animation:dicab 2.4s ease-in-out infinite}
+@keyframes dicab{50%{transform:translateY(5px)}}
+.strack{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:#2b1a2ecc;color:#fff;font:500 .9rem var(--sans);padding:7px 16px;border-radius:99px;backdrop-filter:blur(6px);pointer-events:none}
+.strack.pop{animation:spopc .7s}
+@keyframes spopc{40%{transform:translateX(-50%) scale(1.25)}}
+/* surpresas escondidas */
+.sur{max-width:760px;margin:0 auto;padding:46px 22px;text-align:center}
+.sur .sk{font:500 .8rem var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;opacity:.85}
+.sbtn{position:relative;border:0;cursor:pointer;font:600 1.1rem var(--sans);color:#fff;padding:16px 30px;border-radius:99px;background:linear-gradient(135deg,#ff7d9c,#d6335f);box-shadow:0 10px 28px #d6335f55;animation:sbp 1.8s ease-in-out infinite;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.sbtn:active{transform:scale(.96)}
+@keyframes sbp{50%{transform:scale(1.06);box-shadow:0 14px 36px #d6335f88}}
+.sbtn.wait{animation:none;background:#7a6577;box-shadow:none;cursor:default}
+.sbtn.nope{background:#7a6577;box-shadow:none;animation:none}
+.sbtn.nope.shk{animation:sshk .5s}
+@keyframes sshk{20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-7px)}80%{transform:translateX(7px)}}
+.sbtn.big{font-size:4.6rem;line-height:1;padding:14px 26px 18px;background:none;box-shadow:none;filter:drop-shadow(0 8px 20px #d6335f66)}
+.sbtn.hold{width:150px;height:150px;padding:0;font-size:3.6rem;background:conic-gradient(#ff4f7b calc(var(--p,0) * 1%),#ffd0dc 0);display:inline-flex;align-items:center;justify-content:center;animation:none;box-shadow:0 10px 28px #d6335f44}
+.sbtn.hold::before{content:"";position:absolute;inset:9px;border-radius:50%;background:var(--bg)}
+.sbtn.hold span{position:relative}
+.dts i{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:#fff;animation:dtb 1s ease-in-out infinite}
+.dts i:nth-child(2){animation-delay:.18s}.dts i:nth-child(3){animation-delay:.36s}
+@keyframes dtb{50%{transform:translateY(-6px);opacity:.4}}
+.shint{margin-top:12px;color:var(--muted);font-style:italic;min-height:1.6em}
+.sres{opacity:0;transform:translateY(18px);transition:opacity .9s,transform .9s}
+.sres.on{opacity:1;transform:none;margin-top:6px}
+.stx{font:italic 500 clamp(1.25rem,5vw,1.6rem)/1.4 var(--serif);margin:18px auto 0;max-width:20em}
+.spol{display:inline-block;position:relative;background:#fffdf8;padding:12px 12px 14px;border-radius:4px;box-shadow:0 18px 44px #2b1a2e55;transform:rotate(-3deg);animation:spin .9s cubic-bezier(.2,1.2,.3,1) both}
+.spol img{display:block;max-width:min(76vw,320px);max-height:50vh;width:auto;height:auto;border-radius:2px}
+@keyframes spin{from{opacity:0;transform:scale(.4) rotate(-18deg)}}
+/* fim falso e vales */
+.fakeend .fimtxt{font:italic 500 clamp(2.4rem,11vw,4rem) var(--serif);color:var(--muted)}
+.fakeend .fimsub{color:var(--muted);margin-top:6px}
+.fakeend .psiu,.fakeend .teaser,.fakeend .sbox{opacity:0;transition:opacity 1.2s;min-height:1px}
+.fakeend .psiu{margin-top:50px;font-style:italic;color:var(--accent)}
+.fakeend .teaser{font:italic 500 clamp(1.5rem,6vw,2.1rem) var(--serif);margin:18px 0 20px}
+.fakeend .on{opacity:1}
+.cups{display:grid;gap:12px;max-width:420px;margin:22px auto 0}
+.cup{display:flex;gap:14px;align-items:center;text-align:left;background:var(--surface);border:2px dashed var(--accent);border-radius:16px;padding:14px 16px;animation:cupin .8s cubic-bezier(.2,1.3,.3,1) both}
+.cup .ci{font-size:2.2rem}
+.cup b{display:block;font:italic 500 1.2rem var(--serif)}
+.cup span{font-size:.9rem;color:var(--muted)}
+@keyframes cupin{from{opacity:0;transform:translateY(20px) scale(.9)}}
+@media (prefers-reduced-motion:reduce){.dica,.sbtn{animation:none}}
+
+.sbtn.big.shk{animation:sshk .4s}
