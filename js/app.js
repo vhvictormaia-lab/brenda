@@ -474,7 +474,11 @@ function closeFinale(){
   const F = $('finale'); F.classList.remove('on'); document.body.classList.remove('lock');
   setTimeout(() => { if (!finaleOn) { F.hidden = true; $('bq').innerHTML = ''; } }, 1300);
 }
-$('fClose').onclick = () => { closeFinale(); burst(W / 2, H / 2, 60); };
+$('fClose').onclick = () => {            // "Fim": fecha o agradecimento e leva ela para a última surpresa
+  closeFinale(); burst(W / 2, H / 2, 60);
+  const go = () => { const fe = document.querySelector('.fakeend'); if (fe) fe.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
+  setTimeout(go, 500); setTimeout(go, 1300);
+};
 $('fAgain').onclick = () => { closeFinale(); setTimeout(finale, 1400); };
 $('fSkip').onclick = () => { if (FS) FS.skip = true; };
 
