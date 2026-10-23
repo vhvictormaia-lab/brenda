@@ -195,7 +195,7 @@ const CONFIG = {
     coupons: [
       { icon: '🍽️', t: 'Vale um jantar a dois', d: 'Você escolhe o lugar e eu pago. 😉' },
       { icon: '🤗', t: 'Vale um abraço apertado', d: 'Pode usar quando quiser, sem prazo de validade.' },
-      { icon: '👑', t: 'Vale um dia de rainha', d: 'Hoje você manda em tudo. Eu obedeço. 😅' },
+      { icon: '👑', t: 'Vale um dia de princesa', d: 'Hoje você manda em tudo. Eu obedeço. 😅' },
       { icon: '🙏', t: 'Vale uma oração juntos', d: 'Para agradecer a Deus por tudo o que Ele tem feito por nós.' }
     ],
     last: 'Agora sim, acabou… por enquanto. Eu te amo, {nome}. 💖'
