@@ -479,7 +479,6 @@ $('fClose').onclick = () => {            // "Fim": fecha o agradecimento e leva 
   const go = () => { const fe = document.querySelector('.fakeend'); if (fe) fe.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   setTimeout(go, 500); setTimeout(go, 1300);
 };
-$('fAgain').onclick = () => { closeFinale(); setTimeout(finale, 1400); };
 $('fSkip').onclick = () => { if (FS) FS.skip = true; };
 
 /* ===== efeitos sonoros (Web Audio, criados no código, sem arquivos) ===== */
@@ -934,7 +933,7 @@ async function dia10(fm){
   const O = $('d10'), st = id => document.querySelectorAll('.d10st').forEach(s => s.classList.toggle('on', s.id === id));
   const c = { S, m, yrs, per, cfg, O, alive, w, fill, st };
   $('d10skip').onclick = () => { S.skip = true; if (S.cake) S.cake(); };
-  O.hidden = false; O.classList.remove('pray', 'fin'); O.dataset.theme = theme; D10Y = window.scrollY || document.documentElement.scrollTop || 0; $('d10Again').style.display = fm ? 'none' : ''; document.body.classList.add('lock'); void O.offsetWidth; O.classList.add('on');
+  O.hidden = false; O.classList.remove('pray', 'fin'); O.dataset.theme = theme; D10Y = window.scrollY || document.documentElement.scrollTop || 0; document.body.classList.add('lock'); void O.offsetWidth; O.classList.add('on');
   audioCtx(); duck(.25);
   const notes = D10T[theme] || D10T.rosa;
 
@@ -1021,7 +1020,6 @@ function closeDia10(){
   setTimeout(() => { if (!d10On) O.hidden = true; }, 1300);
 }
 $('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
-$('d10Again').onclick = () => { const m = D10LAST; closeDia10(); setTimeout(() => dia10(m), 1400); };
 
 
 /* ===== surpresas escondidas pelo site principal ===== */
