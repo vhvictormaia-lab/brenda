@@ -918,7 +918,7 @@ const D10M = {
   }
 };
 
-let D10LAST = 0;
+let D10LAST = 0, D10Y = 0;
 async function dia10(fm){
   if (d10On || finaleOn) return; d10On = true;
   fm = typeof fm === 'number' && fm > 0 ? fm : 0; D10LAST = fm;
@@ -930,7 +930,7 @@ async function dia10(fm){
   const O = $('d10'), st = id => document.querySelectorAll('.d10st').forEach(s => s.classList.toggle('on', s.id === id));
   const c = { S, m, yrs, per, cfg, O, alive, w, fill, st };
   $('d10skip').onclick = () => { S.skip = true; if (S.cake) S.cake(); };
-  O.hidden = false; O.classList.remove('pray', 'fin'); O.dataset.theme = theme; document.body.classList.add('lock'); void O.offsetWidth; O.classList.add('on');
+  O.hidden = false; O.classList.remove('pray', 'fin'); O.dataset.theme = theme; D10Y = window.scrollY || document.documentElement.scrollTop || 0; $('d10Again').style.display = fm ? 'none' : ''; document.body.classList.add('lock'); void O.offsetWidth; O.classList.add('on');
   audioCtx(); duck(.25);
   const notes = D10T[theme] || D10T.rosa;
 
@@ -1013,6 +1013,7 @@ async function dia10(fm){
 function closeDia10(){
   d10On = false; if (D10) { clearInterval(D10.fw); (D10.iv || []).forEach(t => { clearInterval(t); clearTimeout(t); }); }
   const O = $('d10'); O.classList.remove('on'); document.body.classList.remove('lock'); duck(.9);
+  const y = D10Y, back = () => window.scrollTo(0, y); back(); requestAnimationFrame(back); setTimeout(back, 120); setTimeout(back, 400);   // volta para o ponto exato do site
   setTimeout(() => { if (!d10On) O.hidden = true; }, 1300);
 }
 $('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
