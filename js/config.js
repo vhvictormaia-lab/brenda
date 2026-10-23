@@ -176,14 +176,14 @@ const CONFIG = {
      photo: número da foto da lista "photos" (0 = primeira) */
   surprises: [
     { after: 'hero', type: 'toque', kicker: 'Surpresa 1', hint: 'Toque aqui 👆', wait: 'Aguarde…', photo: 2,
-      text: 'Olha só esse sorriso… foi ele que me conquistou. 💖' },
+      text: 'Olha só nós dois… esse momento ficou guardado no meu coração. 💖' },
     { after: 'nums', type: 'espere', kicker: 'Surpresa 2', hint: 'Não toque ainda…', go: 'Agora pode! 💖', seconds: 5,
-      text: 'Eu avisei para esperar! Valeu a pena? 😏 Ganhou um abraço apertado de presente. 🤗' },
+      text: 'Eu avisei para esperar! Valeu a pena? 😏 Quem tem paciência comigo ganha o meu amor inteirinho. 💞' },
     { after: 'motivos', type: 'segure', kicker: 'Surpresa 3', hint: 'Segure o coração 💗', photo: 4,
-      text: 'Um segredo: eu me apaixono por você de novo toda vez que você ri.' },
+      text: 'Um segredo: eu me apaixono por você de novo todos os dias.' },
     { after: 'abra', type: 'toques', n: 3, kicker: 'Surpresa 4', hint: 'Toque 3 vezes no coração', photo: 6,
       text: 'Três toques, três vezes eu te digo: eu te amo, eu te amo, eu te amo! 💕' },
-    { after: 'momentos', type: 'toque', kicker: 'Surpresa 5', hint: 'Tem mais… toque aqui 👀', wait: 'Aguarde, vem coisa linda…', photo: 8,
+    { after: 'momentos', type: 'toque', kicker: 'Surpresa 5', hint: 'Tem mais… toque aqui 👀', wait: 'Aguarde, vem coisa linda…', photo: 3,
       text: 'Você achou que era só isso? 😏 Ainda tem mais lá embaixo…' }
   ],
   /* o "FIM" falso: ela acha que acabou, e ainda tem mais */

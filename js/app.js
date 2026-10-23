@@ -1075,7 +1075,7 @@ $('d10Again').onclick = () => { const m = D10LAST; closeDia10(); setTimeout(() =
   });
   /* o FIM falso: parece que acabou, mas ainda tem mais */
   if (FE) {
-    const a = document.getElementById('fim'); if (!a) return;
+    const a = document.getElementById('secret') || document.getElementById('fim'); if (!a) return;
     const sec = mk('sur fakeend', '<p class="fimtxt">' + esc(fl(FE.fim)) + '</p><p class="fimsub">' + esc(fl(FE.fimSub)) + '</p><p class="psiu">' + esc(fl(FE.psiu)) + '</p><p class="teaser">' + esc(fl(FE.teaser)) + '</p><div class="sbox"><button class="sbtn" type="button">' + esc(FE.hint || 'Toque aqui') + '</button></div><div class="sres"></div>');
     a.after(sec);
     const psiu = sec.querySelector('.psiu'), tz = sec.querySelector('.teaser'), box = sec.querySelector('.sbox'), b = sec.querySelector('.sbtn');
