@@ -145,7 +145,7 @@ async function openingScene(){
     makeDove($('s05'), 16);
     line(CONFIG.godLine); await w(4000);
   }
-  if (!S0.skip) { $('ol').innerHTML = '<span class="vs">' + esc(CONFIG.verse) + '<small>' + esc(CONFIG.verseRef) + '</small></span>'; await w(10000); }
+  if (!S0.skip) { $('ol').innerHTML = '<span class="vs">' + esc(CONFIG.verse) + '<small>' + esc(CONFIG.verseRef) + '</small></span>'; await w(14000); }
   if (!S0.skip) {                                           // coração de constelação com o nome
     $('ol').innerHTML = ''; $('obeam').classList.remove('on'); $('ocon').classList.add('on'); vib([40, 60, 40]);
     await w(7200);
