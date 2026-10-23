@@ -476,7 +476,8 @@ function closeFinale(){
 }
 $('fClose').onclick = () => {            // "Fim": fecha o agradecimento e leva ela para a última surpresa
   closeFinale(); burst(W / 2, H / 2, 60);
-  const fe0 = document.querySelector('.fakeend'); if (fe0) fe0.hidden = false;   // a página do FIM aparece agora
+  const fe0 = document.querySelector('.fakeend');
+  if (fe0) { fe0.hidden = false; fe0.dataset.fast = '1'; fe0.querySelectorAll('.psiu,.teaser,.sbox').forEach(el => el.classList.add('on')); setTimeout(() => { sfx.chime(); vib([40, 30, 40]); }, 600); }   // a página do FIM aparece já completa
   const go = () => { const fe = document.querySelector('.fakeend'); if (fe) fe.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
   setTimeout(go, 500); setTimeout(go, 1300);
 };
@@ -1083,7 +1084,7 @@ $('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
     sec.hidden = true;            // só aparece depois de selar a promessa e tocar em "Fim"
     a.after(sec);
     const psiu = sec.querySelector('.psiu'), tz = sec.querySelector('.teaser'), box = sec.querySelector('.sbox'), b = sec.querySelector('.sbtn');
-    new IntersectionObserver((es, io) => { if (!es[0].isIntersecting) return; io.disconnect();
+    new IntersectionObserver((es, io) => { if (!es[0].isIntersecting) return; io.disconnect(); if (sec.dataset.fast) return;
       setTimeout(() => { psiu.classList.add('on'); sfx.sparkle(); vib(25); }, 1100);
       setTimeout(() => { tz.classList.add('on'); box.classList.add('on'); sfx.chime(); vib([40, 30, 40]); }, 2300); }, { threshold: .7 }).observe(sec);
     b.onclick = once(sec, async () => {
