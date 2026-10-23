@@ -526,3 +526,12 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 @media (prefers-reduced-motion:reduce){.dica,.sbtn{animation:none}}
 
 .sbtn.big.shk{animation:sshk .4s}
+
+/* pomba com asas batendo */
+.dove{line-height:0}
+.dove svg{display:block;width:clamp(84px,24vw,130px);height:auto;overflow:visible;filter:drop-shadow(0 0 10px #ffffffaa) drop-shadow(0 0 26px #bfe3ff77);animation:dbob .92s ease-in-out infinite}
+.dove .wn,.dove .wf{transform-box:view-box;transform-origin:62px 44px;animation:flap .46s ease-in-out infinite}
+.dove .wf{animation-delay:-.06s}
+@keyframes flap{0%,100%{transform:rotate(-8deg) scaleY(1)}50%{transform:rotate(14deg) scaleY(-.85)}}
+@keyframes dbob{50%{transform:translateY(-9px)}}
+@media (prefers-reduced-motion:reduce){.dove .wn,.dove .wf{animation-duration:1.2s}}

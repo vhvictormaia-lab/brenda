@@ -142,8 +142,7 @@ async function openingScene(){
   for (const t of CONFIG.openLines) { if (S0.skip) break; line(t); vib(25); await w(3200); }
   if (!S0.skip) {                                           // luz do céu, pomba e versículo
     $('obeam').classList.add('on');
-    const d = document.createElement('span'); d.className = 'dove'; d.textContent = '🕊️'; d.style.top = '16%';
-    $('s05').appendChild(d); setTimeout(() => d.remove(), 9500);
+    makeDove($('s05'), 16);
     line(CONFIG.godLine); await w(4000);
   }
   if (!S0.skip) { $('ol').innerHTML = '<span class="vs">' + esc(CONFIG.verse) + '<small>' + esc(CONFIG.verseRef) + '</small></span>'; await w(5600); }
@@ -418,10 +417,20 @@ function bouquets(){
   const em = ['💐', '🌹', '🌷', '🌸', '💐', '🌺', '🌻', '🌼'];
   $('bq').innerHTML = em.map((e, i) => '<span style="--x:' + (3 + i * 12.5) + '%;--d:' + (i * .35).toFixed(2) + 's;--s:' + Math.round(58 + Math.random() * 62) + 'px">' + e + '</span>').join('');
 }
-function dove(top){
-  const d = document.createElement('span'); d.className = 'dove'; d.textContent = '🕊️'; d.style.top = top + '%';
-  $('finale').appendChild(d); setTimeout(() => d.remove(), 9500);
+/* pomba branca batendo as asas, atravessando a tela */
+const DOVE_SVG = '<svg viewBox="-4 -14 134 108" aria-hidden="true">' +
+  '<g class="wf"><path d="M60 44 C58 14 38 -6 2 -9 C14 5 20 15 22 24 C30 22 36 28 38 36 C46 34 52 40 54 48 Z" fill="#d3ddf2"/></g>' +
+  '<path d="M46 47 C30 40 14 38 0 40 C8 44 6 47 14 49 C8 53 12 56 20 57 C28 59 38 56 48 54 Z" fill="#f4f7ff"/>' +
+  '<path d="M38 52 C40 42 56 39 74 41 C86 42 94 41 100 38 C108 36 110 42 104 47 C96 55 80 58 64 58 C52 58 40 58 38 52 Z" fill="#fff"/>' +
+  '<circle cx="100" cy="42" r="7.2" fill="#fff"/><path d="M106 40.5 L117 44 L106 46 Z" fill="#f2a43a"/><circle cx="101.5" cy="40.2" r="1.6" fill="#2b2b3a"/>' +
+  '<g class="wn"><path d="M66 46 C64 14 42 -8 2 -12 C16 4 22 14 24 24 C33 22 39 28 41 36 C50 34 56 40 58 50 Z" fill="#fff" stroke="#d3dcef" stroke-width="1"/></g></svg>';
+function makeDove(parent, top){
+  const d = document.createElement('span'); d.className = 'dove'; d.innerHTML = DOVE_SVG; d.style.top = top + '%';
+  parent.appendChild(d);
+  const iv = setInterval(() => { if (typeof sfx !== 'undefined' && sfx.flap) sfx.flap(); }, 460);      // som das asas
+  setTimeout(() => { clearInterval(iv); d.remove(); }, 9500);
 }
+function dove(top){ makeDove($('finale'), top); }
 const fountains = (xs, n) => xs.forEach(f => shoot({ x: W * f, y: H + 10, w: 50, n, vy: -17, sy: 5, sx: 9, r: 42, g: .24, l: 1.6, d: .0045 }));
 const petalRain = () => shoot({ x: Math.random() * W, y: -30, n: 2, vy: 2.6, sy: 1.4, sx: 2.5, r: 26, g: .012, l: 3, d: .0016, sw: 1 });
 
@@ -521,6 +530,7 @@ function noise(o){
   s.connect(f); f.connect(g); g.connect(MASTER); s.start(t, Math.random()); s.stop(t + d + .05);
 }
 const sfx = {
+  flap(){ if (sfxOk()) noise({ d: .22, type: 'bandpass', f0: 500, f1: 1800, q: .8, v: .1, a: .05 }); },
   tick(){ if (sfxOk()) tone(1800, { d: .07, type: 'triangle', v: .6, a: .002 }); },
   bell(f, t, v){ if (!sfxOk()) return; f = f || 220; t = t || 0; v = v || .22;
     [[1, 1, 4.5], [2.76, .5, 3], [5.4, .25, 2], [8.93, .12, 1.2]].forEach(p => tone(f * p[0], { t, d: p[2], v: v * p[1], a: .004 })); },
