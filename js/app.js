@@ -143,7 +143,7 @@ async function openingScene(){
   if (!S0.skip) {                                           // luz do céu, pomba e versículo
     $('obeam').classList.add('on');
     makeDove($('s05'), 16);
-    line(CONFIG.godLine); await w(5500);
+    line(CONFIG.godLine); await w(4000);
   }
   if (!S0.skip) { $('ol').innerHTML = '<span class="vs">' + esc(CONFIG.verse) + '<small>' + esc(CONFIG.verseRef) + '</small></span>'; await w(10000); }
   if (!S0.skip) {                                           // coração de constelação com o nome
