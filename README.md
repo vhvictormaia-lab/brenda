@@ -1,37 +1,41 @@
-# Site de declaração
+# Site de declaração para a Brenda
 
+Site estático (sem servidor), publicado no GitHub Pages: https://vhvictormaia-lab.github.io/brenda/
+
+## Estrutura
 ```
-├── index.html
-├── css/style.css
+├── index.html            página
+├── manifest.webmanifest  ícone ao adicionar na tela inicial
+├── css/style.css         visual e animações
 ├── js/
-│   ├── config.js        → EDITE AQUI: nome, data, textos, fotos e vídeos
-│   └── app.js
+│   ├── config.js         EDITE AQUI: textos, datas, fotos, vales, surpresas
+│   └── app.js            funcionamento (não precisa mexer)
 └── assets/
-    ├── photos/          → fotos da galeria principal (foto01.jpg, foto02.jpg...)
-    ├── rings/           → fotos e vídeo da página das alianças (a parte secreta)
-    └── music/           → a música (nossa-musica.mp3)
+    ├── photos/           foto01.jpg ... foto11.jpg (galeria e surpresas)
+    ├── rings/            fotos e vídeo das alianças (parte secreta)
+    ├── music/            nossa-musica.mp3
+    ├── icons/            ícones do site
+    └── og.jpg            imagem que aparece ao enviar o link no WhatsApp
 ```
 
-## Fotos novas
-1. Reduza para no máximo 1600 px no lado maior (squoosh.app) e salve como .jpg, com nome simples, sem espaço nem acento.
-2. Coloque em `assets/photos/` (galeria) ou `assets/rings/` (alianças).
-3. Adicione o caminho na lista `photos` ou `rings` do `js/config.js`.
+## O que o site tem
+1. **Abertura:** envelope, Deus, versículo, constelação, coração que explode e a pergunta com o botão "Sim".
+2. **Site principal:** contador (meses, dias, horas), carta, números, motivos, cartinhas "Abra quando", galeria.
+3. **Surpresas escondidas** pelo caminho (toque, espere, segure, toque 3 vezes). Ficam em `surprises` no `config.js`.
+4. **Segredo:** tocar 5 vezes no coração gigante abre as alianças e promessas. "Selar nossa promessa" leva ao agradecimento a Deus e ao botão **Fim**, que abre a última página (FIM + vales). Os vales ficam em `fakeEnd` no `config.js`.
+5. **Dia 10 (mêsversário):** no dia 10 de cada mês o presente abre uma surpresa própria (de 10/10/2026 até dezembro de 2027; depois disso usa uma carta padrão). Textos em `dia10.months`.
+6. **Nossos meses:** botão no topo e seção com um cartão para cada dia 10 que já passou. Ela pode rever qualquer mês.
 
 ## Depois de qualquer mudança
-Troque o número em `?v=6` (3 linhas no final do `index.html`) para `?v=7`, `?v=8`... assim o celular não usa a versão antiga.
+Troque o número de versão nas 3 linhas do `index.html` (`?v=24` para `?v=25`, e assim por diante). Assim o celular dela não usa a versão antiga.
+
+## Fotos novas
+1. Reduza para no máximo 1600 px no lado maior e salve como .jpg, com nome simples, sem espaço nem acento.
+2. Coloque em `assets/photos/` e adicione o caminho na lista `photos` do `config.js`.
+3. Não suba fotos originais pesadas: deixam o repositório lento.
+
+## Testar sem esperar o dia 10
+Abra o site com `?hoje=2026-11-10` no fim do endereço (qualquer data). Quem souber disso também consegue ver as surpresas antes da hora.
 
 ## Ver no computador
-`python -m http.server 5500` dentro da pasta, e abrir http://localhost:5500
-
-## Dia 10 (mêsversário)
-No dia 10 de cada mês a página abre um presente com animação e sons. Os textos ficam em `dia10` no `js/config.js`.
-Cada mês tem uma surpresa própria (de 10/11/2026 até 10/12/2027): carta, foto-lembrança, versículo e um momento diferente (bolo, estrela, balões, ampulheta, árvore, chuva de bênçãos, cadeado, lanternas, casa, anel de 12 meses, cartas, relógio e aliança). Para mudar, edite `dia10.months` no `config.js`. Confira os versículos na sua Bíblia.
-- Antes do dia 10: aparece o cartão "Um presente te espera no dia 10 · faltam X dias".
-- Para testar sem esperar: abra o site com `?hoje=2026-11-10` no fim do endereço.
-
-## Aba "Nossos meses"
-Logo abaixo do contador aparece a seção "Nossos meses": um cartão para cada dia 10 que já passou (o mais novo primeiro). Ao tocar, a surpresa daquele mês toca de novo. Os cartões aparecem sozinhos, mês a mês.
-
-## Prévia do link e ícone
-- `assets/og.jpg`: imagem que aparece quando o link é enviado no WhatsApp. O endereço completo já está no `index.html` (`og:image` e `og:url`).
-- `manifest.webmanifest` e `assets/icons/`: ícone de coração quando ela adicionar o site à tela inicial do celular.
+`python -m http.server 5500` dentro da pasta e abrir http://localhost:5500
