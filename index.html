@@ -7,10 +7,22 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💖%3C/text%3E%3C/svg%3E">
 <title>Para você, com amor</title>
+<meta name="description" content="Tem uma surpresa esperando por você 💖">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tem uma surpresa para você 💖">
+<meta property="og:description" content="Feita com muito amor. Toque para abrir.">
+<meta property="og:image" content="https://vhvictormaia-lab.github.io/brenda/assets/og.jpg">
+<meta property="og:url" content="https://vhvictormaia-lab.github.io/brenda/">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nós dois">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=9">
+<link rel="stylesheet" href="css/style.css?v=14">
 </head>
 <body class="lock">
 <noscript><p style="padding:40px;text-align:center">Ative o JavaScript para ver a surpresa 💕</p></noscript>
@@ -66,7 +78,16 @@
       <div><b id="ct">00:00:00</b><span>horas juntos</span></div>
     </div>
     <p class="total" id="total"></p>
+    <div class="gwrap"><button class="gift" id="gift" type="button"><span class="gb" aria-hidden="true">🎁</span><span id="giftTxt"></span></button></div>
+    <button class="mlink" id="mlink" type="button" hidden>💞 Nossos meses <span aria-hidden="true">↓</span></button>
   </header>
+
+  <section class="rv" id="meses" hidden>
+    <h2>Nossos meses 💞</h2>
+    <p class="sub">Toque em um mês para reviver a surpresa daquele dia 10</p>
+    <div class="mgrid" id="mgrid"></div>
+    <p class="mnext" id="mnext"></p>
+  </section>
 
   <section class="rv">
     <h2>Uma carta para você</h2>
@@ -178,7 +199,30 @@
   </div>
   <button id="fSkip" type="button">pular</button>
 </div>
-<script src="js/config.js?v=9"></script>
-<script src="js/app.js?v=9"></script>
+<div id="d10" hidden>
+  <div class="rays" aria-hidden="true"></div>
+  <div class="fstars" id="d10stars" aria-hidden="true"></div>
+  <div class="d10st on" id="d1"><p class="dclock" id="dclock">23:59:56</p><p class="dk" id="dt1"></p></div>
+  <div class="d10st" id="d2"><p class="dk">Hoje completamos</p><div class="dbig" id="dBig">0</div><p class="dk" id="dLbl"></p><p class="dsub" id="dSub"></p></div>
+  <div class="d10st" id="d3"><div class="dheart" id="dHeart" aria-hidden="true">♥</div><p class="dk" id="d3t"></p></div>
+  <div class="d10st" id="d3b"><div class="pol" id="pol"><i class="tape"></i><img id="polImg" alt=""><p id="polCap"></p></div></div>
+  <div class="d10st" id="d7"><p class="dk dmt" id="dmT"></p><div class="dmA" id="dmA"></div><button class="btn gold" id="dmBtn" type="button" hidden></button></div>
+  <div class="d10st" id="d8"><p class="dverse" id="dVerse"></p><p class="dref" id="dRef"></p></div>
+  <div class="d10st" id="d4">
+    <p class="dk" id="d4t"></p>
+    <div class="cake" id="cake" aria-hidden="true"><div class="candles" id="candles"></div><div class="tier t2"></div><div class="tier t1"></div><div class="plate"></div></div>
+    <button class="btn gold" id="dBlow" type="button">Apagar as velas 🕯️</button>
+    <div class="dpray" id="dPray" aria-live="polite"></div>
+  </div>
+  <div class="d10st" id="d5"><p class="dk">Uma carta para o nosso dia 10</p><p class="dletter" id="dLetter"></p></div>
+  <div class="d10st" id="d6">
+    <div class="fheart" aria-hidden="true">♥</div>
+    <h2 id="d6t"></h2><p id="d6s"></p>
+    <div class="fbtns"><button class="btn gold" id="d10Again" type="button">Reviver 💞</button><button class="btn" id="d10Close" type="button">Voltar ao site</button></div>
+  </div>
+  <button id="d10skip" type="button">pular</button>
+</div>
+<script src="js/config.js?v=14"></script>
+<script src="js/app.js?v=14"></script>
 </body>
 </html>

@@ -298,3 +298,184 @@ footer{text-align:center;color:var(--muted);padding:0 22px 60px;font-size:.9rem;
 .ol{text-shadow:0 2px 14px #000b,0 0 22px #ffd98a66;z-index:2}
 .ol .vs{font-size:clamp(1.2rem,4.8vw,1.7rem)}
 .ol small{display:block;margin-top:14px;font-style:normal;font-size:.9rem;letter-spacing:.25em;text-transform:uppercase;color:#f9d976}
+
+/* presente do dia 10 */
+.gwrap{margin-top:26px;opacity:0}
+.hero.in .gwrap{animation:up 1s .9s both}
+.gift{display:inline-flex;align-items:center;gap:12px;max-width:100%;background:var(--surface);color:var(--ink);border:1.5px dashed var(--accent);border-radius:999px;padding:12px 22px;cursor:pointer;font-family:var(--serif);font-size:1.02rem;text-align:left;line-height:1.3}
+.gift .gb{font-size:1.6rem;display:inline-block;animation:gwig 4s ease-in-out infinite}
+@keyframes gwig{0%,84%,100%{transform:rotate(0)}88%{transform:rotate(-14deg)}92%{transform:rotate(12deg)}96%{transform:rotate(-8deg)}}
+.gift.shake{animation:gshake .6s}
+@keyframes gshake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.gift.today{border:1.5px solid transparent;background:linear-gradient(135deg,#ff4d79,#d6335f);color:#fff;box-shadow:0 12px 30px -8px #d6335f;animation:pulse 1.5s infinite}
+@media (prefers-reduced-motion:reduce){.gwrap{opacity:1}.gift .gb,.gift.today{animation:none}}
+
+/* cena do dia 10 */
+#d10{position:fixed;inset:0;z-index:68;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 28%,#4b2a63 0%,#1b0c2c 62%,#0e0618 100%);opacity:0;transition:opacity 1.2s;color:#fff3d6}
+#d10[hidden]{display:none}
+#d10.on{opacity:1}
+#d10.pray .rays{opacity:.45;animation:rpulse 7s ease-in-out infinite}
+#d10stars i,#d10 .fstars i{position:absolute;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+.d10st{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px}
+.d10st.on{display:flex;animation:fadein .9s}
+.dk{font-family:var(--serif);font-style:italic;color:#f9d976;font-size:clamp(1.15rem,4.6vw,1.5rem);text-shadow:0 2px 12px #000a}
+.dclock{font-family:var(--serif);font-size:clamp(3rem,16vw,5.4rem);letter-spacing:.06em;font-variant-numeric:tabular-nums;text-shadow:0 0 30px #ffd98a66}
+.dclock.mid{color:#ffe08a;text-shadow:0 0 50px #ffd98a;animation:dpop 1.2s ease}
+@keyframes dpop{0%{transform:scale(.8)}40%{transform:scale(1.18)}100%{transform:scale(1)}}
+.dbig{font-family:var(--serif);font-size:clamp(6rem,38vw,12rem);line-height:1;color:#ffd98a;text-shadow:0 0 50px #f5c54299;font-variant-numeric:tabular-nums}
+.dbig.pop{animation:dpop .9s ease}
+.dsub{font-family:var(--serif);font-size:clamp(1.05rem,4.2vw,1.35rem);min-height:1.6em;margin-top:8px;text-shadow:0 2px 12px #000a}
+.dheart{font-size:clamp(7rem,36vw,12rem);color:#ff5c8a;text-shadow:0 0 50px #ff5c8a;line-height:1}
+.dheart.b{animation:hbeat .55s ease}
+@keyframes hbeat{0%{transform:scale(1)}20%{transform:scale(1.22)}40%{transform:scale(1)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+#d3t{max-width:15em;font-size:clamp(1.3rem,5.4vw,1.8rem);margin-top:10px}
+#d4t{max-width:16em;font-size:clamp(1.3rem,5.4vw,1.8rem);color:#fff3d6}
+.cake{position:relative;width:min(70vw,260px);height:220px;margin:8px auto 6px;transition:opacity .8s,height 1s,margin 1s}
+.cake .plate{position:absolute;bottom:0;left:-8%;right:-8%;height:14px;border-radius:50%;background:#e9d7c8;box-shadow:0 8px 20px #0008}
+.cake .tier{position:absolute;border-radius:16px 16px 6px 6px}
+.cake .t1{bottom:8px;left:0;right:0;height:78px;background:linear-gradient(#ffd0dc,#ff9db6)}
+.cake .t2{bottom:80px;left:14%;right:14%;height:62px;background:linear-gradient(#fff0f4,#ffc2d1)}
+.cake .tier::before{content:"";position:absolute;left:0;right:0;top:-2px;height:18px;background:radial-gradient(circle at 10px 0,#fff 9px,transparent 10px) 0 0/22px 18px repeat-x}
+.candles{position:absolute;bottom:142px;left:22%;right:22%;display:flex;justify-content:space-evenly;align-items:flex-end}
+.candles i{position:relative;width:8px;height:34px;border-radius:3px;background:repeating-linear-gradient(135deg,#fff 0 5px,#ff7d9c 5px 10px)}
+.candles i b{position:absolute;left:50%;bottom:100%;margin-left:-6px;width:12px;height:20px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;
+  background:radial-gradient(circle at 50% 70%,#fff6c0,#ffb02e 60%,#ff6a00);box-shadow:0 0 18px 6px #ffb02e88;transform-origin:50% 100%;animation:flick .25s ease-in-out infinite alternate;transition:opacity .5s,transform .5s}
+@keyframes flick{from{transform:scale(1,1) rotate(-2deg)}to{transform:scale(.92,1.08) rotate(2deg)}}
+.cake.off .candles i b{opacity:0;transform:scale(.2);animation:none}
+.cake.off .candles i::after{content:"";position:absolute;left:50%;bottom:100%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#ffffff88;animation:smoke 1.6s ease-out forwards}
+@keyframes smoke{to{transform:translateY(-50px) scale(3);opacity:0}}
+.cake.away{opacity:0;height:0;margin:0;overflow:hidden}
+.dpray{max-width:560px;min-height:9em;display:flex;align-items:center;justify-content:center}
+.dpray:empty{min-height:0}
+.dletter{max-width:34em;font-family:var(--serif);font-size:clamp(1.12rem,4.4vw,1.45rem);line-height:1.65;text-align:left;border-left:3px solid #f5c542;padding-left:18px;text-shadow:0 2px 12px #000a}
+#d6 h2{color:#fff3d6;font-style:italic;font-weight:400;font-size:clamp(1.9rem,8vw,3rem);max-width:12em;margin:0}
+#d6 p{font-family:var(--serif);color:#f9d976;font-size:1.2rem}
+#d10skip{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));left:14px;background:none;border:0;color:#d9b8d0;text-decoration:underline;cursor:pointer;z-index:2}
+#d10.fin #d10skip{display:none}
+
+/* temas de cada mês */
+#d10[data-theme="natal"]{background:radial-gradient(ellipse at 50% 28%,#1d5a43 0%,#0c2c22 60%,#050f0b 100%)}
+#d10[data-theme="verao"]{background:radial-gradient(ellipse at 50% 28%,#7a3a52 0%,#3a1630 62%,#1a0816 100%)}
+#d10[data-theme="noite"]{background:radial-gradient(ellipse at 50% 28%,#26356e 0%,#101a3d 62%,#080c1f 100%)}
+#d10[data-theme="outono"]{background:radial-gradient(ellipse at 50% 28%,#7a4320 0%,#3a1e12 62%,#1a0d08 100%)}
+#d10[data-theme="ceu"]{background:radial-gradient(ellipse at 50% 28%,#2f6f9c 0%,#173a5c 62%,#0a1a2e 100%)}
+#d10[data-theme="ouro"]{background:radial-gradient(ellipse at 50% 28%,#6b4a14 0%,#2e1f0a 62%,#140d04 100%)}
+
+/* polaroid da lembrança do mês */
+.pol{width:min(82vw,340px);box-sizing:border-box;position:relative;background:#fffdf8;padding:12px 12px 14px;border-radius:4px;box-shadow:0 24px 60px #000c;text-align:center;opacity:0;transform:translateY(-120vh) rotate(-12deg)}
+.pol.fall{animation:poldrop 1.3s cubic-bezier(.2,1.1,.3,1) forwards}
+@keyframes poldrop{0%{opacity:1;transform:translateY(-120vh) rotate(-14deg)}70%{opacity:1;transform:translateY(8px) rotate(-2deg)}100%{opacity:1;transform:translateY(0) rotate(-3deg)}}
+.pol img{display:block;margin:0 auto;max-width:100%;max-height:46vh;width:auto;height:auto;border-radius:2px}
+.pol p{font-family:var(--serif);font-style:italic;color:#4a2a3a;font-size:1.25rem;margin:12px 4px 2px;min-height:1.5em}
+.tape{position:absolute;top:-14px;left:50%;width:90px;height:26px;margin-left:-45px;background:#ffe9a8bb;transform:rotate(-3deg)}
+
+/* área dos momentos */
+.dmA{position:relative;width:100%;max-width:560px;min-height:300px;display:flex;align-items:center;justify-content:center}
+.dmA.wide{position:absolute;inset:0;max-width:none;min-height:0;pointer-events:none}
+.dmt{max-width:17em;font-size:clamp(1.25rem,5vw,1.7rem);color:#fff3d6;min-height:2.6em}
+.fm{display:inline-block;font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,5vw,1.7rem);line-height:1.4;color:#fff3d6;text-shadow:0 2px 12px #000a;animation:fmin .9s both}
+@keyframes fmin{from{opacity:0;transform:translateY(12px)}}
+@keyframes bigin{from{opacity:0;transform:scale(.2) rotate(-60deg)}}
+.dverse{max-width:19em;font-family:var(--serif);font-style:italic;font-size:clamp(1.3rem,5.4vw,1.8rem);line-height:1.45;text-shadow:0 2px 14px #000b;animation:fmin 1.2s both}
+.dref{margin-top:6px;font-family:var(--serif);color:#f9d976;font-size:1.1rem;animation:fmin 1.2s .6s both}
+
+/* estrela de Natal */
+.bstar{font-size:clamp(8rem,40vw,14rem);line-height:1;color:#ffd75e;text-shadow:0 0 60px #ffd75e,0 0 130px #ffb02e;animation:bigin 2s ease both,spulse 3s ease-in-out 2s infinite}
+@keyframes spulse{50%{transform:scale(1.08);opacity:.85}}
+
+/* listas (planos e gratidão) */
+.plist{list-style:none;padding:0;display:grid;gap:14px;text-align:left;width:min(88vw,440px)}
+.plist li{display:flex;gap:14px;align-items:center;opacity:0;transform:translateX(-18px);transition:opacity .8s,transform .8s;font-family:var(--serif);font-size:clamp(1.1rem,4.4vw,1.4rem);color:#fff3d6;text-shadow:0 2px 10px #000a}
+.plist li.on{opacity:1;transform:none}
+.plist .ck{flex:0 0 34px;height:34px;border-radius:50%;background:#f9d976;color:#2a1238;display:flex;align-items:center;justify-content:center;font-weight:700}
+.plist.gr .ck{background:none;color:#ff8fab;font-size:1.6rem;text-shadow:0 0 14px #ff5c8a}
+
+/* balões */
+.brow{display:flex;gap:6px;justify-content:center;align-items:flex-end;min-height:260px}
+.bal{background:none;border:0;cursor:pointer;font-size:clamp(5rem,24vw,7.5rem);line-height:1;filter:hue-rotate(var(--h));animation:bob 3s ease-in-out var(--d) infinite;transition:transform .2s}
+.bal:active{transform:scale(1.12)}
+.bal.gone{visibility:hidden;pointer-events:none}
+@keyframes bob{50%{transform:translateY(-16px) rotate(3deg)}}
+
+/* ampulheta */
+.hg{width:min(52vw,210px);overflow:visible;transition:transform 1s ease}
+.hg.flip{transform:rotate(180deg)}
+
+/* árvore */
+.tr{width:min(84vw,360px);overflow:visible}
+.tb{fill:none;stroke:#8b5a3c;stroke-width:6;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s ease forwards}
+.tb.t0{stroke-width:11}
+.tf{font-size:26px;transform-box:fill-box;transform-origin:center;animation:tfin .7s cubic-bezier(.2,1.6,.4,1) both;filter:drop-shadow(0 0 6px #ffffff66)}
+@keyframes tfin{from{opacity:0;transform:scale(0)}}
+
+/* chuva de bênçãos */
+.drop{position:absolute;top:-30px;width:2px;height:22px;background:linear-gradient(transparent,#a9d6ffaa);animation:dfall linear infinite}
+@keyframes dfall{to{transform:translateY(420px)}}
+.rw{position:absolute;top:-10px;color:#e3f2ff;font-family:var(--serif);font-style:italic;text-shadow:0 0 12px #9fd0ff;animation:rwfall 3.6s ease-in forwards}
+@keyframes rwfall{0%{opacity:0;transform:translateY(0)}15%{opacity:1}100%{opacity:0;transform:translateY(340px)}}
+.rbow{font-size:clamp(7rem,34vw,11rem);line-height:1;animation:bigin 1.8s ease both}
+
+/* cadeado */
+.dlock{font-size:clamp(7rem,34vw,11rem);line-height:1;filter:drop-shadow(0 0 30px #f9d97688);transition:transform .4s}
+.dlock.shut{animation:dpop .8s ease}
+
+/* lanternas */
+.ln{position:absolute;bottom:-110px;animation:lrise 12s ease-in forwards}
+@keyframes lrise{to{transform:translateY(-118vh)}}
+.lb{animation:lsway 3s ease-in-out infinite alternate;display:flex;flex-direction:column;align-items:center}
+@keyframes lsway{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
+.lb i{display:block;width:46px;height:58px;border-radius:44% 44% 14% 14%;background:radial-gradient(circle at 50% 70%,#fff1b0,#ffb02e 55%,#e8701a);box-shadow:0 0 30px 10px #ffb02e77}
+.lb b{display:block;margin-top:6px;font:italic 500 .95rem var(--serif);color:#ffe9b0;text-shadow:0 0 8px #000}
+
+/* casa */
+.hs{width:min(78vw,340px);overflow:visible}
+.hl{fill:none;stroke:#f9d976;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.2s ease forwards}
+.hw,.hd{fill:#2a1a35;stroke:#f9d97688;stroke-width:2;transition:fill 1s,filter 1s}
+.hw.on{fill:#ffd86b;filter:drop-shadow(0 0 12px #ffb02e)}
+.hd.on{fill:#ffcf6a;filter:drop-shadow(0 0 18px #ffb02e)}
+
+/* um ano: doze meses */
+.yr{position:relative;width:300px;height:300px;max-width:90vw}
+.yc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:140px;text-align:center;font-family:var(--serif);font-style:italic;font-size:1.5rem;color:#fff3d6;line-height:1.2}
+.yc .ring{font-size:3.4rem;display:block;animation:bigin 1s ease both}
+.ym{position:absolute;transform:translate(-50%,-50%);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:.8rem var(--serif);color:#ffffff77;border:1px solid #ffffff33;transition:all .5s}
+.ym.on{color:#2a1238;background:#f9d976;border-color:transparent;box-shadow:0 0 20px #f9d976aa}
+
+/* cartas */
+.crow{display:grid;gap:12px;width:min(88vw,420px)}
+.cd{background:#ffffff14;border:1px solid #f5c54255;border-radius:14px;overflow:hidden}
+.cb{display:flex;gap:12px;align-items:center;width:100%;background:none;border:0;color:#fff3d6;font:italic 1.1rem var(--serif);padding:14px 16px;cursor:pointer;text-align:left}
+.cd p{max-height:0;overflow:hidden;opacity:0;padding:0 16px;font-family:var(--serif);text-align:left;line-height:1.5;transition:max-height .8s,opacity .8s,padding .5s}
+.cd.open p{max-height:220px;opacity:1;padding:0 16px 14px}
+
+/* relógio com a aliança */
+.ac{width:min(70vw,280px)}
+
+/* coração que enche (novembro) */
+.hrt{width:min(72vw,290px);overflow:visible;filter:drop-shadow(0 0 22px #ff5c8a66)}
+.hrt text{font-family:var(--serif);font-style:italic;font-weight:600}
+/* árvore de Natal (dezembro) */
+.xm{width:min(80vw,320px);overflow:visible}
+
+/* aba "Nossos meses" */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:14px;margin-top:24px}
+.mc{position:relative;border:0;padding:0;border-radius:18px;overflow:hidden;aspect-ratio:3/4;cursor:pointer;background:var(--soft);box-shadow:0 10px 28px #2b1a2e33;text-align:left;color:#fff;transition:transform .25s}
+.mc:active{transform:scale(.97)}
+.mc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mc::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,#14081cdd)}
+.mc .mi{position:absolute;left:12px;right:12px;bottom:12px;z-index:1}
+.mc .mi b{display:block;font:italic 500 1.3rem/1.15 var(--serif);text-shadow:0 2px 8px #0008}
+.mc .mi span{display:block;font-size:.8rem;opacity:.92}
+.mc .mp{position:absolute;top:10px;right:10px;z-index:1;width:34px;height:34px;border-radius:50%;background:#0006;display:flex;align-items:center;justify-content:center;font-size:.95rem;backdrop-filter:blur(4px)}
+.mc.today{box-shadow:0 0 0 3px #f9d976,0 12px 34px #f9d97666}
+.mc .mb{position:absolute;top:10px;left:10px;z-index:1;background:#f9d976;color:#2a1238;font:600 .72rem var(--sans);padding:3px 9px;border-radius:99px}
+.mnext{text-align:center;margin-top:22px;color:var(--muted);font-style:italic}
+
+/* caixa de surpresas (1º mês) */
+.gbox{background:none;border:0;cursor:pointer;font-size:clamp(8rem,38vw,12rem);line-height:1;filter:drop-shadow(0 0 34px #ff8fabaa);animation:bob 2.4s ease-in-out infinite}
+.gbox.shake2{animation:shk .55s}
+@keyframes shk{20%{transform:rotate(-14deg) scale(1.1)}40%{transform:rotate(14deg) scale(1.16)}60%{transform:rotate(-9deg) scale(1.08)}80%{transform:rotate(9deg)}}
+
+.mlink{display:block;margin:14px auto 0;background:none;border:1.5px solid var(--accent);color:var(--accent);font:500 1rem var(--sans);padding:9px 20px;border-radius:99px;cursor:pointer}
+.mlink:active{transform:scale(.97)}

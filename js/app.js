@@ -8,6 +8,11 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const LOW = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 2;
 const SC = LOW ? .55 : 1;   // aparelhos mais fracos recebem menos partículas
 
+/* relógio do site; ?hoje=2026-11-10 na URL simula outra data (para testar o dia 10) */
+const _hoje = new URLSearchParams(location.search).get('hoje');
+const T_OFF = _hoje && !isNaN(new Date(_hoje + 'T12:00:00')) ? new Date(_hoje + 'T12:00:00') - Date.now() : 0;
+const nowD = () => new Date(Date.now() + T_OFF);
+
 /* textos */
 document.title = CONFIG.title;
 let ci = 0;
@@ -90,7 +95,7 @@ function shoot(o){
   for (let i = 0; i < n; i++) P.push({
     x: o.x + (Math.random() - .5) * (o.w || 0), y: o.y, vx: (o.vx || 0) + (Math.random() - .5) * (o.sx || 6), vy: (o.vy || 0) + (Math.random() - .5) * (o.sy || 4),
     r: (o.r || 30) * (.6 + Math.random() * .8), rot: Math.random() * 6, vr: (Math.random() - .5) * .14,
-    k: Math.floor(Math.random() * FLW.length), a: FLW, l: o.l || 1.4, g: o.g, d: o.d, sw: o.sw });
+    k: Math.floor(Math.random() * (o.sp || FLW).length), a: o.sp || FLW, l: o.l || 1.4, g: o.g, d: o.d, sw: o.sw });
   if (P.length > 650) P.splice(0, P.length - 650);
   if (!raf) loop();
 }
@@ -180,6 +185,7 @@ $('yes').onclick = async e => {
   $('hero').classList.add('in');
   burst(innerWidth / 2, innerHeight * .4, 90);
   watch();
+  autoDia10();
   setTimeout(() => $('intro').remove(), 1400);
 };
 
@@ -305,7 +311,7 @@ const start = new Date(CONFIG.startDate);
 const nf = n => Math.floor(n).toLocaleString('pt-BR');
 let ease = 0;
 function tick(){
-  const now = new Date();
+  const now = nowD();
   let months = (now.getFullYear() - start.getFullYear()) * 12 + now.getMonth() - start.getMonth();
   let anchor = new Date(start); anchor.setMonth(start.getMonth() + months);
   if (anchor > now) { months--; anchor = new Date(start); anchor.setMonth(start.getMonth() + months); }
@@ -471,3 +477,543 @@ function closeFinale(){
 $('fClose').onclick = () => { closeFinale(); burst(W / 2, H / 2, 60); };
 $('fAgain').onclick = () => { closeFinale(); setTimeout(finale, 1400); };
 $('fSkip').onclick = () => { if (FS) FS.skip = true; };
+
+/* ===== efeitos sonoros (Web Audio, criados no código, sem arquivos) ===== */
+let AC = null, MASTER = null, NB = null;
+function audioCtx(){
+  if (!AC) {
+    try {
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      const comp = AC.createDynamicsCompressor(); MASTER = AC.createGain(); MASTER.gain.value = .85;
+      MASTER.connect(comp); comp.connect(AC.destination);
+    } catch (e) { AC = null; return null; }
+  }
+  if (AC.state === 'suspended') { try { AC.resume().catch(() => {}); } catch (e) {} }
+  return AC;
+}
+document.addEventListener('pointerdown', () => audioCtx(), { passive: true });   // libera o som no primeiro toque (iPhone exige)
+const sfxOk = () => $('sound').textContent !== '🔇' && !!audioCtx();
+function tone(f, o){
+  o = o || {};
+  const c = AC, t = c.currentTime + (o.t || 0), d = o.d || 1, v = o.v || .2;
+  const os = c.createOscillator(), g = c.createGain();
+  os.type = o.type || 'sine'; os.frequency.setValueAtTime(f, t);
+  if (o.to) os.frequency.exponentialRampToValueAtTime(o.to, t + d);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + (o.a || .006)); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  os.connect(g); g.connect(MASTER); os.start(t); os.stop(t + d + .05);
+}
+function noise(o){
+  o = o || {};
+  const c = AC, t = c.currentTime + (o.t || 0), d = o.d || .5;
+  if (!NB || NB.sampleRate !== c.sampleRate) {
+    NB = c.createBuffer(1, c.sampleRate * 3, c.sampleRate);
+    const a = NB.getChannelData(0); for (let i = 0; i < a.length; i++) a[i] = Math.random() * 2 - 1;
+  }
+  const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = NB; f.type = o.type || 'lowpass'; f.Q.value = o.q || 1;
+  f.frequency.setValueAtTime(o.f0 || 800, t); if (o.f1) f.frequency.exponentialRampToValueAtTime(o.f1, t + d);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(o.v || .2, t + (o.a || .01)); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  s.connect(f); f.connect(g); g.connect(MASTER); s.start(t, Math.random()); s.stop(t + d + .05);
+}
+const sfx = {
+  tick(){ if (sfxOk()) tone(1800, { d: .07, type: 'triangle', v: .6, a: .002 }); },
+  bell(f, t, v){ if (!sfxOk()) return; f = f || 220; t = t || 0; v = v || .22;
+    [[1, 1, 4.5], [2.76, .5, 3], [5.4, .25, 2], [8.93, .12, 1.2]].forEach(p => tone(f * p[0], { t, d: p[2], v: v * p[1], a: .004 })); },
+  chime(t){ if (!sfxOk()) return; [784, 988, 1175, 1568].forEach((f, i) => sfx.bell(f, (t || 0) + i * .16, .09)); },
+  harp(notes, gap){ if (!sfxOk()) return; gap = gap || .13;
+    notes.forEach((f, i) => { tone(f, { t: i * gap, d: 1.8, type: 'triangle', v: .15, a: .004 }); tone(f * 2, { t: i * gap, d: .8, v: .03 }); }); },
+  heart(){ if (!sfxOk()) return; tone(95, { d: .16, to: 48, v: .55, a: .004 }); tone(190, { d: .1, to: 90, v: .12, type: 'triangle' }); tone(85, { t: .22, d: .2, to: 42, v: .38, a: .004 }); },
+  sparkle(){ if (!sfxOk()) return; for (let i = 0; i < 4; i++) tone([1568, 1976, 2349, 2637, 3136][Math.floor(Math.random() * 5)], { t: i * .07, d: .5, v: .1 }); },
+  blow(){ if (sfxOk()) noise({ d: .9, type: 'bandpass', f0: 700, f1: 1500, q: .7, v: .6, a: .08 }); },
+  firework(){ if (!sfxOk()) return;
+    noise({ d: .55, type: 'bandpass', f0: 500, f1: 3200, q: 2, v: .25, a: .3 });
+    noise({ t: .55, d: 1.1, type: 'lowpass', f0: 700, f1: 80, v: 1, a: .004 });
+    for (let i = 0; i < 9; i++) noise({ t: .6 + Math.random() * .7, d: .05, type: 'highpass', f0: 3500, v: .15, a: .002 }); }
+};
+
+/* ===== dia 10: o presente do mêsversário ===== */
+const SD = CONFIG.dia10 || {}, DAYN = SD.day || 10;
+const monthsAt = d => (d.getFullYear() - start.getFullYear()) * 12 + d.getMonth() - start.getMonth();
+function specialInfo(){
+  const n = nowD(), m = monthsAt(n), today = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+  if (n.getDate() === DAYN && m >= 1) return { today: true, m };
+  let nx = new Date(n.getFullYear(), n.getMonth(), DAYN);
+  if (nx <= today) nx = new Date(n.getFullYear(), n.getMonth() + 1, DAYN);
+  while (monthsAt(nx) < 1) nx = new Date(nx.getFullYear(), nx.getMonth() + 1, DAYN);
+  return { today: false, m: monthsAt(nx), days: Math.round((nx - today) / 864e5) };
+}
+function giftInit(){
+  const g = $('gift'), txt = $('giftTxt'), s = specialInfo();
+  g.classList.toggle('today', s.today);
+  txt.textContent = s.today ? 'Hoje é dia ' + DAYN + '! Toque para abrir o seu presente'
+    : 'Um presente te espera no dia ' + DAYN + ' · faltam ' + s.days + (s.days === 1 ? ' dia' : ' dias');
+  g.onclick = () => {
+    if (specialInfo().today) return dia10();
+    g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake');
+    sfx.sparkle(); vib(40);
+    const old = txt.textContent; txt.textContent = 'Ainda não… mas falta pouco 💞';
+    setTimeout(() => { txt.textContent = old; }, 2600);
+  };
+  if (typeof MESES !== 'undefined') renderMeses();
+}
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+const dateOfM = m => new Date(start.getFullYear(), start.getMonth() + m, DAYN, 12);
+const labelM = m => { const y = Math.floor(m / 12), r = m % 12, p = [];
+  if (y) p.push(y + (y === 1 ? ' ano' : ' anos')); if (r) p.push(r + (r === 1 ? ' mês' : ' meses')); return p.join(' e '); };
+function renderMeses(){            // aba "Nossos meses": os dias 10 que já passaram
+  const sec = $('meses'), grid = $('mgrid'), n = nowD(), si = specialInfo();
+  const cur = si.today ? si.m : si.m - 1;
+  $('mlink').hidden = cur < 1; $('mlink').onclick = () => { sfx.sparkle(); sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  if (cur < 1) { sec.hidden = true; return; }
+  sec.hidden = false; grid.innerHTML = '';
+  const ph = CONFIG.photos || [];
+  for (let m = cur; m >= 1; m--) {
+    const cf = (SD.months || {})[m] || {}, src = ph.length ? ph[(cf.photo != null ? cf.photo : m * 3) % ph.length] : '';
+    const d = dateOfM(m), b = document.createElement('button'); b.type = 'button'; b.className = 'mc' + (si.today && m === cur ? ' today' : '');
+    b.innerHTML = (si.today && m === cur ? '<i class="mb">Hoje!</i>' : '') + (src ? '<img loading="lazy" alt="" src="' + esc(src) + '">' : '') + '<i class="mp">▶</i>' +
+      '<div class="mi"><b>' + esc(labelM(m)) + '</b><span>10 ' + MESES[d.getMonth()].slice(0, 3) + ' ' + d.getFullYear() + (cf.tag ? ' · ' + esc(cf.tag) : '') + '</span></div>';
+    b.onclick = () => { sfx.sparkle(); dia10(m); };
+    grid.appendChild(b);
+  }
+  const nx = $('mnext');
+  nx.textContent = si.today ? '' : 'Próxima surpresa: dia ' + DAYN + ' de ' + MESES[dateOfM(si.m).getMonth()] + ' · faltam ' + si.days + (si.days === 1 ? ' dia' : ' dias') + ' 💞';
+}
+giftInit();
+renderMeses();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { giftInit(); renderMeses(); } });
+
+function autoDia10(){      // abre sozinho na primeira visita do dia 10
+  if (RM || !specialInfo().today) return;
+  const n = nowD(), key = 'd10:' + n.getFullYear() + '-' + n.getMonth() + '-' + n.getDate();
+  if (!_hoje) { try { if (localStorage.getItem(key)) return; localStorage.setItem(key, '1'); } catch (e) {} }
+  setTimeout(dia10, 3800);
+}
+
+for (let i = 0; i < 45; i++) {
+  const s = document.createElement('i'), z = 1 + Math.random() * 2.4;
+  s.style.cssText = 'left:' + Math.random() * 100 + '%;top:' + Math.random() * 100 + '%;width:' + z + 'px;height:' + z + 'px;animation-delay:' + (-Math.random() * 4) + 's';
+  $('d10stars').appendChild(s);
+}
+let d10On = false, D10 = null;
+const duck = v => { try { bgm.volume = v; } catch (e) {} };
+
+/* ---- sons extras dos momentos ---- */
+Object.assign(sfx, {
+  pop(){ if (!sfxOk()) return; noise({ d: .12, type: 'highpass', f0: 1500, v: .7, a: .002 }); tone(300, { d: .1, to: 90, v: .3, a: .002 }); },
+  click(){ if (!sfxOk()) return; tone(880, { d: .09, type: 'triangle', v: .35, a: .002 }); tone(1320, { t: .06, d: .12, type: 'triangle', v: .25, a: .002 }); },
+  shutter(){ if (!sfxOk()) return; noise({ d: .06, type: 'highpass', f0: 2500, v: .5, a: .002 }); noise({ t: .09, d: .08, type: 'highpass', f0: 1800, v: .4, a: .002 }); },
+  whoosh(){ if (sfxOk()) noise({ d: 1.2, type: 'bandpass', f0: 300, f1: 2500, q: 1, v: .4, a: .5 }); },
+  sand(d){ if (sfxOk()) noise({ d: d || 5, type: 'highpass', f0: 4500, v: .09, a: .6 }); },
+  rain(d){ if (sfxOk()) noise({ d: d || 2.8, type: 'highpass', f0: 3000, v: .12, a: .5 }); },
+  note(i){ if (!sfxOk()) return; const sc = [523, 587, 659, 784, 880, 1047, 1175, 1319]; tone(sc[(i || 0) % sc.length], { d: 1.2, type: 'triangle', v: .22, a: .004 }); tone(sc[(i || 0) % sc.length] * 2, { d: .6, v: .04 }); },
+  pad(f){ if (!sfxOk()) return; f = f || 261; [1, 1.25, 1.5].forEach(r => tone(f * r, { d: 4, type: 'sine', v: .08, a: 1.2 })); },
+  jingle(){ if (!sfxOk()) return; [784, 659, 784, 1047, 988, 880, 784].forEach((f, i) => tone(f, { t: i * .18, d: .7, type: 'triangle', v: .18, a: .004 })); }
+});
+const D10T = {                // notas de cada tema (usadas no final)
+  rosa: [523, 659, 784, 1047], natal: [392, 523, 659, 784, 1047], verao: [587, 740, 880, 1175],
+  noite: [440, 523, 659, 880], outono: [349, 440, 523, 698], ceu: [523, 659, 784, 988, 1319], ouro: [523, 659, 784, 1047, 1319]
+};
+const emojiSpr = list => list.map(e => {
+  const s = document.createElement('canvas'); s.width = s.height = 64;
+  const g = s.getContext('2d'); g.font = '48px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(e, 32, 36); return s;
+});
+const SPR_STAR = emojiSpr(['⭐', '✨', '🌟', '💛']);
+const SPR_BLOOM = emojiSpr(['🌸', '💮', '🌺', '💖']);
+const SPR_GOLD = emojiSpr(['✨', '💛', '🌟', '💍']);
+const SPR_SNOW = emojiSpr(['❄️', '✨', '❄️', '⭐']);
+
+/* ---- utilitários dos momentos ---- */
+const dmA = () => $('dmA');
+function dmReset(c, title, wide){
+  c.st('d7'); const a = dmA(); a.innerHTML = ''; a.className = 'dmA' + (wide ? ' wide' : '');
+  $('dmT').textContent = c.fill(title || ''); $('dmBtn').hidden = true;
+}
+async function dmLine(c, txt, ms, cls){
+  if (!c.alive() || c.S.skip) return;
+  const a = dmA(); a.innerHTML = '<p class="' + (cls || 'fm') + '">' + esc(c.fill(txt)) + '</p>';
+  await c.w(ms || 4200);
+}
+const svgEl = (tag, attrs) => { const e = document.createElementNS('http://www.w3.org/2000/svg', tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+function waitFor(c, setup, maxMs){          // espera uma interação (ou pular / tempo máximo)
+  return new Promise(r => { c.S.cake = r; const t = setTimeout(r, maxMs || 30000); c.S.iv.push(t); setup(r); });
+}
+const words = c => (c.cfg.words || []);
+
+const D10M = {
+  /* bolo, velas e oração */
+  async bolo(c){
+    c.st('d4'); const cake = $('cake'), btn = $('dBlow'), O = c.O;
+    cake.classList.remove('off', 'away'); btn.hidden = false; $('dPray').innerHTML = '';
+    $('candles').innerHTML = '<i><b></b></i>'.repeat(Math.max(1, Math.min(c.yrs || c.m, 12)));
+    $('d4t').textContent = c.fill(SD.cakeLine || 'Vamos agradecer a Deus por mais um {periodo}.');
+    await waitFor(c, r => { btn.onclick = r; });
+    btn.hidden = true;
+    if (c.alive() && !c.S.skip) {
+      sfx.blow(); cake.classList.add('off'); vib(60); await c.w(1700);
+      sfx.sparkle(); sfx.harp([523, 659, 784, 1047], .14); $('d4t').textContent = ''; cake.classList.add('away'); O.classList.add('pray'); await c.w(1000);
+      for (const ln of (SD.prayer || [])) {
+        if (!c.alive() || c.S.skip) break;
+        $('dPray').innerHTML = '<p class="fl">' + esc(c.fill(ln)) + '</p>'; vib(30); await c.w(5000);
+      }
+      $('dPray').innerHTML = '';
+    }
+  },
+
+  /* coração que se enche de amor (novembro) */
+  async coracao(c){
+    dmReset(c, ''); const a = dmA(), hp = 'M50 85 C10 55 0 30 15 15 C30 0 47 8 50 22 C53 8 70 0 85 15 C100 30 90 55 50 85 Z';
+    a.innerHTML = '<svg class="hrt" viewBox="0 0 100 90"><defs><clipPath id="hcl"><path d="' + hp + '"/></clipPath><linearGradient id="hgd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8fab"/><stop offset="1" stop-color="#e0245e"/></linearGradient></defs>' +
+      '<path d="' + hp + '" fill="#ffffff12"/><rect id="hLq" x="0" y="90" width="100" height="90" fill="url(#hgd)" clip-path="url(#hcl)"/>' +
+      '<path d="' + hp + '" fill="none" stroke="#ffb3c6" stroke-width="2"/><text id="hTx" x="50" y="50" text-anchor="middle" font-size="15" fill="#fff">0%</text></svg>';
+    const L = $('hLq'), X = $('hTx'), ls = words(c); sfx.pad(262); sfx.heart();
+    const t0 = performance.now(), D = 5200; let li = -1, lb = 0;
+    while (c.alive() && !c.S.skip) {
+      const p = Math.min(1, (performance.now() - t0) / D), e = 1 - Math.pow(1 - p, 2);
+      L.setAttribute('y', 88 - 86 * e + Math.sin(performance.now() / 160) * 1.5); X.textContent = Math.round(e * 100) + '%';
+      const k = Math.min(1, Math.floor(p * 2)); if (k !== li) { li = k; $('dmT').textContent = c.fill(ls[k] || ''); }
+      if (performance.now() - lb > 620) { lb = performance.now(); sfx.heart(); vib(20); }
+      if (p >= 1) break; await sleep(40);
+    }
+    if (c.alive() && !c.S.skip) {
+      X.textContent = '∞'; X.setAttribute('font-size', 30); $('dmT').textContent = c.fill(ls[2] || ''); sfx.bell(523, 0, .28); sfx.chime(.3); flash(); vib([80, 50, 80]);
+      shoot({ x: W / 2, y: H * .4, n: 50, sx: 14, sy: 12, r: 26, l: 2.2, sp: SPR_BLOOM }); burst(W / 2, H * .4, 90); await c.w(4600);
+    }
+  },
+  /* árvore de Natal que acende (dezembro) */
+  async natal(c){
+    dmReset(c, c.cfg.momentTitle); const a = dmA(), svg = svgEl('svg', { class: 'xm', viewBox: '0 0 300 350' }); a.appendChild(svg);
+    const add = (tag, at, cls) => { const e = svgEl(tag, at); if (cls) e.setAttribute('class', cls); svg.appendChild(e); return e; };
+    add('rect', { x: 135, y: 296, width: 30, height: 36, fill: '#7a4a2a' });
+    ['150,60 62,150 238,150', '150,106 42,222 258,222', '150,168 22,302 278,302'].forEach((p, i) => { const e = add('polygon', { points: p, fill: ['#2a8f5a', '#23804f', '#1c7044'][i] }, 'tf'); e.style.animationDelay = (i * .35) + 's'; });
+    sfx.pad(392); await c.w(1500);
+    const cols = ['#ff5c6c', '#ffd75e', '#6cc8ff', '#ffffff', '#ff9ad5'], pts = [[150, 95], [120, 135], [180, 130], [100, 175], [150, 165], [200, 178], [75, 220], [120, 215], [180, 212], [228, 224], [60, 268], [110, 255], [160, 262], [208, 258], [250, 272]];
+    for (let i = 0; i < pts.length; i++) {
+      if (!c.alive() || c.S.skip) break;
+      add('circle', { cx: pts[i][0], cy: pts[i][1], r: 7, fill: cols[i % cols.length], style: 'filter:drop-shadow(0 0 7px ' + cols[i % cols.length] + ')' }, 'tf'); sfx.note(i); await c.w(170);
+    }
+    if (c.alive() && !c.S.skip) {
+      const st = add('text', { x: 150, y: 62, 'text-anchor': 'middle', 'font-size': 56, fill: '#ffd75e', style: 'filter:drop-shadow(0 0 14px #ffd75e)' }, 'tf'); st.textContent = '★';
+      sfx.chime(); sfx.jingle(); flash(); vib([60, 40, 60]);
+      shoot({ x: W / 2, y: -20, n: 46, w: W, sx: 2, sy: 2, vy: 2, r: 20, l: 4, g: .03, sw: 1, sp: SPR_SNOW }); await c.w(1500);
+    }
+    const gifts = [[70, 332], [230, 332], [150, 340]];
+    for (let i = 0; i < words(c).length; i++) {
+      if (!c.alive() || c.S.skip) break;
+      const g = add('text', { x: gifts[i][0], y: gifts[i][1], 'text-anchor': 'middle', 'font-size': 30 }, 'tf'); g.textContent = '🎁';
+      $('dmT').textContent = c.fill(words(c)[i]); sfx.click(); sfx.harp([659, 784, 988], .12); burst(W / 2, H * .55, 24); await c.w(4300);
+    }
+  },
+
+  /* caixa de surpresas: toque, toque de novo, abre, corações, explosão (1º mês) */
+  async presente(c){
+    const ws = words(c), ok = () => c.alive() && !c.S.skip;
+    dmReset(c, ws[0]); const a = dmA();
+    a.innerHTML = '<button class="gbox" type="button" id="gbx" aria-label="Abrir o presente">🎁</button>'; const g = $('gbx'); sfx.pad(262);
+    await waitFor(c, r => { g.onclick = r; }, 14000);
+    if (!ok()) return;
+    g.onclick = null; g.classList.remove('shake2'); void g.offsetWidth; g.classList.add('shake2'); sfx.click(); sfx.sparkle(); vib(40);
+    burst(W / 2, H * .45, 24, true); $('dmT').textContent = c.fill('Mais uma vez… 💞');
+    await waitFor(c, r => { g.onclick = r; }, 14000);
+    if (!ok()) return;
+    sfx.pop(); sfx.chime(); flash(); vib([60, 40, 60]); shoot({ x: W / 2, y: H * .5, n: 36, sx: 14, sy: 12, r: 24, l: 2, sp: SPR_GOLD });
+    $('dmT').textContent = c.fill('Dentro dele estão três coisas… toque nos corações 💖');
+    a.innerHTML = ''; const row = document.createElement('div'); row.className = 'brow'; a.appendChild(row);
+    let left = 3;
+    await waitFor(c, done => {
+      const pop = (b, i) => {
+        if (b.classList.contains('gone')) return; b.classList.add('gone');
+        const r = b.getBoundingClientRect(); sfx.pop(); sfx.heart(); vib(30); burst(r.left + r.width / 2, r.top + r.height / 2, 30);
+        $('dmT').textContent = c.fill(ws[i + 1] || ''); sfx.harp([523 + i * 130, 659 + i * 130, 784 + i * 130], .12);
+        if (--left <= 0) setTimeout(done, 3600);
+      };
+      for (let i = 0; i < 3; i++) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'bal'; b.textContent = '💖';
+        b.style.setProperty('--h', ((i - 1) * 28) + 'deg'); b.style.setProperty('--d', (-i * .8) + 's'); b.onclick = () => pop(b, i); row.appendChild(b);
+      }
+      c.S.iv.push(setInterval(() => { const b = row.querySelector('.bal:not(.gone)'); if (b) pop(b, [...row.children].indexOf(b)); }, 7000));
+    }, 70000);
+    if (!ok()) return;
+    a.innerHTML = '<button class="gbox" type="button" id="gbx2" aria-label="Último toque">💖</button>'; const g2 = $('gbx2');
+    $('dmT').textContent = c.fill('Agora o último toque… 💥'); sfx.pad(330);
+    await waitFor(c, r => { g2.onclick = r; }, 14000);
+    if (!ok()) return;
+    a.innerHTML = ''; sfx.firework(); sfx.chime(.2); flash(); vib([120, 60, 120, 60, 200]);
+    burst(W / 2, H * .42, 120); shoot({ x: W / 2, y: H * .42, n: 70, sx: 18, sy: 16, r: 30, l: 2.6, sp: SPR_BLOOM }); fountains([.15, .85], 10);
+    for (let i = 1; i <= 3; i++) setTimeout(() => { if (c.alive()) { burst(W * (.2 + Math.random() * .6), H * (.2 + Math.random() * .3), 70); sfx.firework(); } }, i * 700);
+    $('dmT').textContent = c.fill(ws[4] || ''); await c.w(6500);
+  },
+  /* estrela de Natal */
+  async estrela(c){
+    dmReset(c, ''); dmA().innerHTML = '<div class="bstar">★</div>';
+    sfx.pad(392); sfx.harp([523, 659, 784, 1047, 1319], .2); flash();
+    shoot({ x: W / 2, y: H * .35, n: 22, sx: 10, sy: 8, r: 26, l: 2, sp: SPR_STAR }); await c.w(3000);
+    for (const t of words(c)) { if (!c.alive() || c.S.skip) break; $('dmT').textContent = c.fill(t); sfx.chime(); burst(W / 2, H * .3, 26); await c.w(5600); }
+  },
+  /* nossos planos */
+  async planos(c){
+    dmReset(c, c.cfg.momentTitle); const ul = document.createElement('ul'); ul.className = 'plist'; dmA().appendChild(ul);
+    for (const t of words(c)) {
+      if (!c.alive() || c.S.skip) break;
+      const li = document.createElement('li'); li.innerHTML = '<span class="ck">✓</span><span>' + esc(c.fill(t)) + '</span>'; ul.appendChild(li);
+      void li.offsetWidth; li.classList.add('on'); sfx.click(); vib(25); burst(W / 2, H * .45, 8, true); await c.w(1900);
+    }
+    if (c.alive() && !c.S.skip) { sfx.chime(); burst(W / 2, H * .4, 60); await c.w(3000); }
+  },
+  /* balões que estouram em mensagens */
+  async baloes(c){
+    dmReset(c, c.cfg.momentTitle); const row = document.createElement('div'); row.className = 'brow'; dmA().appendChild(row);
+    const msgs = words(c); let left = msgs.length;
+    await waitFor(c, done => {
+      const pop = (b, i) => {
+        if (b.classList.contains('gone')) return; b.classList.add('gone');
+        const r = b.getBoundingClientRect(); sfx.pop(); vib(30); burst(r.left + r.width / 2, r.top + r.height / 2, 24);
+        $('dmT').textContent = c.fill(msgs[i]); sfx.note(i + 2); if (--left <= 0) { setTimeout(done, 3600); }
+      };
+      msgs.forEach((t, i) => {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'bal'; b.textContent = '🎈';
+        b.style.setProperty('--h', (i * 120 - 20) + 'deg'); b.style.setProperty('--d', (-i * .7) + 's');
+        b.onclick = () => pop(b, i); row.appendChild(b);
+      });
+      c.S.iv.push(setInterval(() => { const b = row.querySelector('.bal:not(.gone)'); if (b) pop(b, [...row.children].indexOf(b)); }, 6500));   // se ela não tocar, estouram sozinhos
+    }, 60000);
+    await c.w(600);
+  },
+  /* meio ano: ampulheta */
+  async ampulheta(c){
+    dmReset(c, ''); const a = dmA();
+    a.innerHTML = '<svg class="hg" id="hg" viewBox="0 0 100 160"><defs><clipPath id="hgT"><polygon points="15,12 85,12 50,80"/></clipPath><clipPath id="hgB"><polygon points="50,80 15,148 85,148"/></clipPath></defs>' +
+      '<rect id="hgTs" x="0" y="12" width="100" height="68" fill="#f9d976" clip-path="url(#hgT)"/><rect id="hgBs" x="0" y="148" width="100" height="0" fill="#f9d976" clip-path="url(#hgB)"/>' +
+      '<line id="hgF" x1="50" y1="80" x2="50" y2="148" stroke="#f9d976" stroke-width="1.6"/>' +
+      '<path d="M12 10 H88 M12 150 H88 M15 12 L50 80 L15 148 M85 12 L50 80 L85 148" fill="none" stroke="#fff3d6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const T = $('hgTs'), B = $('hgBs'), F = $('hgF'), lines = words(c); sfx.sand(6.5);
+    const t0 = performance.now(), D = 6500; let li = -1;
+    while (c.alive() && !c.S.skip) {
+      const p = Math.min(1, (performance.now() - t0) / D);
+      T.setAttribute('y', 12 + 68 * p); T.setAttribute('height', 68 * (1 - p));
+      B.setAttribute('y', 148 - 62 * p); B.setAttribute('height', 62 * p); F.style.opacity = p < 1 ? 1 : 0;
+      const k = Math.min(lines.length - 1, Math.floor(p * lines.length)); if (k !== li) { li = k; $('dmT').textContent = c.fill(lines[k]); sfx.note(k + 1); }
+      if (p >= 1) break; await sleep(50);
+    }
+    if (c.alive() && !c.S.skip) { sfx.bell(440, 0, .25); sfx.chime(.5); $('hg').classList.add('flip'); burst(W / 2, H * .4, 50); await c.w(3200); }
+  },
+  /* árvore do nosso amor: uma flor por mês */
+  async arvore(c){
+    dmReset(c, c.cfg.momentTitle); const col = c.cfg.treeColor || '#ffb347';
+    const svg = svgEl('svg', { class: 'tr', viewBox: '0 0 400 320' }); dmA().appendChild(svg);
+    svg.appendChild(svgEl('ellipse', { cx: 200, cy: 110, rx: 150, ry: 95, fill: col, opacity: .18 }));
+    ['M200 312 C200 250 195 210 200 160', 'M200 225 C170 205 150 195 118 172', 'M200 205 C230 185 255 175 288 152', 'M200 180 C185 152 170 130 158 100', 'M200 172 C216 146 233 126 248 98'].forEach((d, i) => {
+      const p = svgEl('path', { d, class: 'tb' + (i ? '' : ' t0'), pathLength: 1 }); p.style.animationDelay = (i * .35) + 's'; svg.appendChild(p);
+    });
+    sfx.pad(220); await c.w(2400);
+    const em = ['🌸', '💖', '🌷', '🌼', '💗', '🌺'], n = Math.min(c.m, 15), ga = 2.399963;
+    for (let i = 0; i < n; i++) {
+      if (!c.alive() || c.S.skip) break;
+      const r = Math.sqrt((i + .5) / n), x = 200 + Math.cos(i * ga) * r * 135, y = 108 + Math.sin(i * ga) * r * 82;
+      const t = svgEl('text', { x, y, 'text-anchor': 'middle', 'dominant-baseline': 'middle', class: 'tf' }); t.textContent = em[i % em.length];
+      svg.appendChild(t); sfx.note(i); vib(15);
+      const bb = svg.getBoundingClientRect(); burst(bb.left + x / 400 * bb.width, bb.top + y / 320 * bb.height, 6, true);
+      await c.w(Math.max(260, 3600 / n));
+    }
+    if (c.alive() && !c.S.skip) { sfx.chime(); shoot({ x: W / 2, y: -20, n: 40, w: W, sx: 3, sy: 3, vy: 3, r: 24, l: 3, g: .05, sw: 1, sp: SPR_BLOOM }); await c.w(3200); }
+  },
+  /* chuva de bênçãos */
+  async chuva(c){
+    dmReset(c, c.cfg.momentTitle); const a = dmA(); a.style.overflow = 'hidden'; a.style.minHeight = '340px'; sfx.rain(3.5); sfx.pad(330);
+    for (let i = 0; i < 42; i++) { const d = document.createElement('i'); d.className = 'drop'; d.style.left = Math.random() * 100 + '%'; d.style.animationDuration = (.7 + Math.random() * .7) + 's'; d.style.animationDelay = (-Math.random() * 1.4) + 's'; a.appendChild(d); }
+    const ws = words(c);
+    for (let i = 0; i < ws.length; i++) {
+      if (!c.alive() || c.S.skip) break;
+      const s = document.createElement('span'); s.className = 'rw'; s.textContent = ws[i]; s.style.left = (8 + (i % 4) * 22 + Math.random() * 6) + '%'; s.style.fontSize = (1.3 + Math.random() * .8) + 'rem'; a.appendChild(s);
+      sfx.note(i); if (i % 2 === 0) sfx.rain(1.2); await c.w(900);
+    }
+    await c.w(3200);
+    if (c.alive() && !c.S.skip) { a.innerHTML = '<div class="rbow">🌈</div>'; $('dmT').textContent = c.fill('Depois da chuva, Deus pinta o céu.'); sfx.harp([523, 659, 784, 1047, 1319], .14); flash(); burst(W / 2, H * .4, 70); await c.w(4800); }
+  },
+  /* cadeado: namora comigo de novo? */
+  async cadeado(c){
+    dmReset(c, ''); const a = dmA(); a.innerHTML = '<div class="dlock" id="dlk">🔓</div>';
+    const q = words(c)[0] || 'Quer continuar sendo a minha namorada?'; sfx.pad(294); await c.w(1200);
+    $('dmT').textContent = c.fill(q); const btn = $('dmBtn'); btn.textContent = 'Sim, para sempre 💍'; btn.hidden = false;
+    await waitFor(c, r => { btn.onclick = r; }, 40000);
+    btn.hidden = true;
+    if (c.alive() && !c.S.skip) {
+      const lk = $('dlk'); lk.textContent = '🔒'; lk.classList.add('shut'); sfx.click(); sfx.bell(523, 0, .25); sfx.chime(.3); vib([60, 40, 60]); flash();
+      shoot({ x: W / 2, y: H * .45, n: 40, sx: 12, sy: 10, r: 26, l: 2, sp: SPR_GOLD }); burst(W / 2, H * .4, 80);
+      $('dmT').textContent = c.fill('Selado. Eu te escolho, {nome}. 💞'); await c.w(4800);
+    }
+  },
+  /* lanternas de oração */
+  async lanternas(c){
+    dmReset(c, c.cfg.momentTitle, true); const a = dmA(); a.style.pointerEvents = 'none'; $('dmT').style.position = 'relative'; $('dmT').style.zIndex = 3;
+    sfx.pad(220); const ws = words(c);
+    for (let i = 0; i < ws.length; i++) {
+      if (!c.alive() || c.S.skip) break;
+      const l = document.createElement('div'); l.className = 'ln'; l.style.left = (6 + (i % 4) * 22 + Math.random() * 8) + '%'; l.style.animationDuration = (11 + Math.random() * 3) + 's';
+      l.innerHTML = '<div class="lb"><i></i><b>' + esc(c.fill(ws[i])) + '</b></div>'; a.appendChild(l);
+      sfx.whoosh(); sfx.note(i); vib(20); await c.w(1500);
+    }
+    await c.w(6500);
+  },
+  /* casa dos sonhos */
+  async casa(c){
+    dmReset(c, ''); const a = dmA();
+    a.innerHTML = '<svg class="hs" viewBox="0 0 300 240"><path class="hl" pathLength="1" d="M30 120 L150 30 L270 120"/><path class="hl" pathLength="1" d="M50 108 V212 H250 V108"/><path class="hl" pathLength="1" d="M200 62 V40 H225 V82"/>' +
+      '<rect class="hw" x="70" y="130" width="44" height="44" rx="3"/><rect class="hw" x="186" y="130" width="44" height="44" rx="3"/><rect class="hd" x="128" y="150" width="44" height="62" rx="3"/><rect class="hw" x="130" y="76" width="40" height="30" rx="3"/></svg>';
+    sfx.pad(262); await c.w(2400);
+    const parts = [...a.querySelectorAll('.hw,.hd')], ls = words(c);
+    for (let i = 0; i < ls.length; i++) {
+      if (!c.alive() || c.S.skip) break;
+      const p = parts[i % parts.length]; p.classList.add('on'); sfx.click(); sfx.note(i + 1); $('dmT').textContent = c.fill(ls[i]);
+      const r = p.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, 10, true); await c.w(3300);
+    }
+    parts.forEach(p => p.classList.add('on')); if (c.alive() && !c.S.skip) { sfx.harp([392, 494, 587, 784, 988], .14); burst(W / 2, H * .4, 60); await c.w(3000); }
+  },
+  /* um ano: anel de 12 meses */
+  async ano(c){
+    dmReset(c, ''); const a = dmA(); const box = document.createElement('div'); box.className = 'yr'; a.appendChild(box);
+    const ms = ['set', 'out', 'nov', 'dez', 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago'], els = [];
+    ms.forEach((n, i) => { const e = document.createElement('div'); e.className = 'ym'; const ang = i / 12 * Math.PI * 2 - Math.PI / 2; e.style.left = (50 + Math.cos(ang) * 40) + '%'; e.style.top = (50 + Math.sin(ang) * 40) + '%'; e.textContent = n; box.appendChild(e); els.push(e); });
+    const ctr = document.createElement('div'); ctr.className = 'yc'; box.appendChild(ctr); sfx.pad(262);
+    for (let i = 0; i < 12; i++) { if (!c.alive() || c.S.skip) break; els[i].classList.add('on'); sfx.note(i % 8); vib(12); await c.w(420); }
+    if (c.alive() && !c.S.skip) {
+      ctr.innerHTML = '<span class="ring">💍</span>1 ano'; sfx.bell(523, 0, .28); sfx.chime(.4); flash(); vib([80, 50, 80]);
+      shoot({ x: W / 2, y: H * .4, n: 40, sx: 14, sy: 12, r: 28, l: 2.2, sp: SPR_GOLD }); burst(W / 2, H * .4, 90); await c.w(5200);
+    }
+  },
+  /* gratidão: lista de obrigados */
+  async gratidao(c){
+    dmReset(c, c.cfg.momentTitle); const ul = document.createElement('ul'); ul.className = 'plist gr'; dmA().appendChild(ul); sfx.pad(349);
+    for (const t of words(c)) {
+      if (!c.alive() || c.S.skip) break;
+      const li = document.createElement('li'); li.innerHTML = '<span class="ck">♥</span><span>' + esc(c.fill(t)) + '</span>'; ul.appendChild(li);
+      void li.offsetWidth; li.classList.add('on'); sfx.heart(); vib([30, 60, 20]); burst(W / 2, H * .45, 8, true); await c.w(2800);
+    }
+    await c.w(1500);
+  },
+  /* cartas "abra quando" */
+  async cartas(c){
+    dmReset(c, c.cfg.momentTitle); const row = document.createElement('div'); row.className = 'crow'; dmA().appendChild(row);
+    const ls = words(c); let opened = 0;
+    await waitFor(c, done => {
+      ls.forEach(l => {
+        const d = document.createElement('div'); d.className = 'cd'; d.innerHTML = '<button class="cb" type="button">💌 <span>' + esc(l.t) + '</span></button><p>' + esc(c.fill(l.x)) + '</p>'; row.appendChild(d);
+        d.querySelector('button').onclick = () => { if (d.classList.contains('open')) return; d.classList.add('open'); sfx.click(); sfx.harp([523, 659, 784], .12); vib(25); burst(W / 2, H * .5, 14, true); if (++opened >= ls.length) setTimeout(done, 5000); };
+      });
+      c.S.iv.push(setInterval(() => { const d = row.querySelector('.cd:not(.open) button'); if (d) d.click(); }, 9000));   // abre sozinha se ela não tocar
+    }, 70000);
+  },
+  /* relógio correndo atrás da aliança */
+  async anel(c){
+    dmReset(c, ''); const a = dmA();
+    a.innerHTML = '<div style="display:flex;gap:18px;font-size:clamp(3.5rem,16vw,5.5rem);align-items:center;justify-content:center"><span id="acR" style="transition:transform 1.3s">⏰</span><span id="acG" style="transition:transform 1.3s;filter:drop-shadow(0 0 20px #f9d976)">💍</span></div>';
+    const lines = CONFIG.clockLines || [], R = $('acR'), G = $('acG'); sfx.pad(294);
+    for (let i = 0; i < lines.length; i++) {
+      if (!c.alive() || c.S.skip) break;
+      $('dmT').textContent = c.fill(lines[i]); sfx.tick();
+      const last = i === lines.length - 1; R.style.transform = 'translateX(' + (last ? 70 : i * 18) + 'px) rotate(' + (i * 40) + 'deg)'; G.style.transform = 'translateX(' + (last ? 70 : 45 + i * 24) + 'px)';
+      if (last) { sfx.bell(523, 0, .28); sfx.chime(.4); flash(); shoot({ x: W / 2, y: H * .4, n: 36, sx: 12, sy: 10, r: 26, l: 2.2, sp: SPR_GOLD }); }
+      await c.w(i === lines.length - 1 ? 5200 : 4200);
+    }
+  }
+};
+
+let D10LAST = 0;
+async function dia10(fm){
+  if (d10On || finaleOn) return; d10On = true;
+  fm = typeof fm === 'number' && fm > 0 ? fm : 0; D10LAST = fm;
+  const S = D10 = { skip: false, iv: [] }, m = fm || specialInfo().m, when = fm ? dateOfM(fm) : nowD(), yrs = m % 12 === 0 ? m / 12 : 0, per = yrs ? 'ano' : 'mês';
+  const cfg = (SD.months || {})[m] || {}, theme = cfg.theme || 'rosa';
+  const alive = () => d10On && D10 === S;
+  const w = async ms => { const t0 = performance.now(); while (alive() && !S.skip && performance.now() - t0 < ms) await sleep(100); };
+  const fill = t => String(t || '').replace(/\{nome\}/g, CONFIG.herName).replace(/\{periodo\}/g, per);
+  const O = $('d10'), st = id => document.querySelectorAll('.d10st').forEach(s => s.classList.toggle('on', s.id === id));
+  const c = { S, m, yrs, per, cfg, O, alive, w, fill, st };
+  $('d10skip').onclick = () => { S.skip = true; if (S.cake) S.cake(); };
+  O.hidden = false; O.classList.remove('pray', 'fin'); O.dataset.theme = theme; document.body.classList.add('lock'); void O.offsetWidth; O.classList.add('on');
+  audioCtx(); duck(.25);
+  const notes = D10T[theme] || D10T.rosa;
+
+  /* 1. relógio chegando à meia-noite */
+  st('d1'); const dc = $('dclock'); dc.classList.remove('mid'); $('dt1').textContent = '';
+  for (const t of ['23:59:56', '23:59:57', '23:59:58', '23:59:59']) { if (S.skip) break; dc.textContent = t; sfx.tick(); await w(1000); }
+  if (alive() && !S.skip) {
+    dc.textContent = '00:00:00'; dc.classList.add('mid'); flash(); vib([80, 60, 80]);
+    sfx.bell(196, 0, .3); sfx.bell(196, 1.5, .26); sfx.chime(2.2);
+    $('dt1').textContent = (fm ? 'Dia ' + DAYN + ' de ' + MESES[when.getMonth()] + ' de ' + when.getFullYear() : fill(SD.openingTitle || 'Hoje é dia ' + DAYN)) + (cfg.tag ? ' · ' + cfg.tag : '');
+    burst(W / 2, H / 2, 90); await w(4400);
+  }
+  /* 2. quanto tempo juntos */
+  if (alive() && !S.skip) {
+    st('d2'); const target = yrs || m, total = Math.max(0, when - start), big = $('dBig');
+    big.classList.remove('pop'); $('dSub').textContent = ''; $('dLbl').textContent = (yrs ? (yrs === 1 ? 'ano' : 'anos') : (m === 1 ? 'mês' : 'meses')) + ' de nós';
+    for (let i = 0; i <= target && alive() && !S.skip; i++) { big.textContent = i; sfx.tick(); await w(i === target ? 100 : Math.max(160, 900 / target)); }
+    if (alive() && !S.skip) {
+      sfx.chime(); vib(50); big.classList.add('pop'); burst(W / 2, H * .4, 70);
+      const t0 = performance.now(); let k = 0;
+      while (alive() && !S.skip) {
+        const p = Math.min(1, (performance.now() - t0) / 2600), e = 1 - Math.pow(1 - p, 3);
+        $('dSub').textContent = nf(total / 864e5 * e) + ' dias · ' + nf(total / 36e5 * e) + ' horas de amor';
+        if (k++ % 2 === 0 && p < 1) sfx.tick();
+        if (p >= 1) break; await sleep(60);
+      }
+      await w(2400);
+    }
+  }
+  /* 3. batimentos */
+  if (alive() && !S.skip) {
+    st('d3'); $('d3t').textContent = fill(SD.heartLine || 'Cada batida do meu coração tem o seu nome.');
+    const hb = $('dHeart');
+    for (let i = 0; i < 4 && alive() && !S.skip; i++) {
+      hb.classList.remove('b'); void hb.offsetWidth; hb.classList.add('b'); sfx.heart(); vib([40, 90, 30]);
+      if (i % 2 === 0) burst(W / 2, H * .4, 10, true); await w(1100);
+    }
+  }
+  /* 4. polaroid: a lembrança do mês */
+  if (alive() && !S.skip) {
+    const photos = CONFIG.photos || [], src = photos[(cfg.photo != null ? cfg.photo : m * 3) % Math.max(1, photos.length)];
+    if (src) {
+      st('d3b'); const pol = $('pol'), img = $('polImg'); pol.classList.remove('fall'); img.src = src; $('polCap').textContent = fill(cfg.caption || 'Mais um mês de nós');
+      await sleep(250); void pol.offsetWidth; pol.classList.add('fall'); sfx.whoosh(); await w(900); sfx.shutter(); flash(); vib(40);
+      shoot({ x: W / 2, y: H * .3, n: 18, sx: 10, sy: 6, r: 22, l: 1.8, sp: SPR_GOLD }); sfx.harp(notes.slice(0, 3), .15); await w(5200);
+    }
+  }
+  /* 5. o momento criativo do mês */
+  if (alive() && !S.skip) {
+    for (const mk of String(cfg.moment || 'bolo').split('+')) {
+      if (!alive() || S.skip) break;
+      try { await (D10M[mk] || D10M.bolo)(c); } catch (e) { console.warn('dia10 moment', e); }
+      S.iv.forEach(t => { clearInterval(t); clearTimeout(t); }); S.iv = []; S.cake = null;
+      const a = dmA(); if (a) { a.style.cssText = ''; } $('dmT').style.cssText = '';
+    }
+  }
+  /* 6. versículo */
+  if (alive() && !S.skip && cfg.verse) {
+    st('d8'); O.classList.add('pray'); $('dVerse').textContent = '“' + cfg.verse[0] + '”'; $('dRef').textContent = cfg.verse[1];
+    sfx.pad(262); sfx.harp(notes, .2); burst(W / 2, H * .3, 24); await w(7000);
+  }
+  /* 7. carta do mês */
+  if (alive() && !S.skip) {
+    st('d5'); const el = $('dLetter'); el.textContent = '';
+    const txt = fill(cfg.letter || (yrs ? SD.yearLetter : SD.defaultLetter));
+    for (const ch of txt) { if (!alive() || S.skip) break; el.textContent += ch; await sleep('.,'.includes(ch) ? 220 : 30); }
+    if (alive() && !S.skip) { sfx.harp([392, 494, 587, 784], .16); await w(4200); }
+  }
+  /* 8. final com fogos */
+  if (!alive()) return;
+  st('d6'); O.classList.add('pray', 'fin'); $('d6t').textContent = fill(SD.finalText); $('d6s').textContent = fill(SD.finalSign);
+  flash(); vib([120, 60, 120]); sfx.harp(notes.concat([notes[notes.length - 1] * 1.26]), .12); sfx.chime(.8);
+  let k = 0;
+  S.fw = setInterval(() => {
+    if (!alive() || ++k > 24) return clearInterval(S.fw);
+    burst(W * (.15 + Math.random() * .7), H * (.12 + Math.random() * .38), 70); sfx.firework();
+    if (k % 3 === 0) fountains([.15, .85], 8);
+  }, 900);
+}
+function closeDia10(){
+  d10On = false; if (D10) { clearInterval(D10.fw); (D10.iv || []).forEach(t => { clearInterval(t); clearTimeout(t); }); }
+  const O = $('d10'); O.classList.remove('on'); document.body.classList.remove('lock'); duck(.9);
+  setTimeout(() => { if (!d10On) O.hidden = true; }, 1300);
+}
+$('d10Close').onclick = () => { closeDia10(); burst(W / 2, H / 2, 60); };
+$('d10Again').onclick = () => { const m = D10LAST; closeDia10(); setTimeout(() => dia10(m), 1400); };
