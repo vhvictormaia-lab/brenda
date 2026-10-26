@@ -177,11 +177,10 @@ $('openBtn').onclick = () => { startMusic(); sequence(); };
   g.onsubmit = e => {
     e.preventDefault();
     const v = norm($('gIn').value);
-    if (v && ok.some(x => v === x || v === x + 's')) { try { localStorage.setItem('gateOk', '1'); } catch(_){} unlock(); return; }
+    if (v && ok.some(x => v === x || v === x + 's')) { unlock(); return; }
     $('gErr').textContent = (CONFIG.gate && CONFIG.gate.wrong) || 'Hmm, não foi essa… tente de novo 💕';
     g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake');
   };
-  try { if (localStorage.getItem('gateOk') === '1') unlock(); } catch(_){}
 })();
 startMusic().then(ok => { if (ok || !CONFIG.musicFile) sequence(); });
 
