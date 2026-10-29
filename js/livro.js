@@ -410,7 +410,7 @@ async function livro(c){
     rslot.appendChild(toc.R); curR = null;
     const lf = newLeaf(cov, null); lf.style.zIndex = 7; spread.appendChild(lf);
     await w(900); sfx.pad(196); spark(q(cov, '.cvph'), 14); q(cov, '.cvbtn').classList.add('on');
-    await tap(q(cov, '.cvbtn'));
+    await Promise.race([tap(q(cov, '.cvbtn')), tap(lf), tap(bookEl)]);
     if (!alive()) return;
     sfx.chime(); vib([40, 30, 40]); flash(); burst(W / 2, H / 2, 80);
     bookEl.classList.add('open'); await turn(toc, lf); first = false;

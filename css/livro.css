@@ -278,3 +278,4 @@
 .cvf::after{content:"";position:absolute;inset:0;border-radius:.4em;background:linear-gradient(115deg,#0000 35%,#ffffff40 50%,#0000 65%);background-size:250% 100%;animation:shine 4.5s ease-in-out infinite;pointer-events:none}
 @keyframes shine{0%{background-position:150% 0}60%,100%{background-position:-60% 0}}
 @media (max-height:520px) and (orientation:landscape){.bktitle{top:6px;left:auto;right:12px;align-items:flex-end;text-align:right}.bktitle b{font-size:1rem}.bktitle small{font-size:.65rem}}
+.bkL,.bkR{transform:translateZ(2px)}
