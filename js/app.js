@@ -169,7 +169,7 @@ async function sequence(){
   } catch (e) {}
   show('s3');
 }
-$('openBtn').onclick = () => { startMusic(); sequence(); };
+$('openBtn').onclick = () => { try { startMusic(); } catch (e) {} sequence(); };
 (function(){
   const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
   const ok = (CONFIG.gate && CONFIG.gate.answers) || ['tamara'];
@@ -182,7 +182,6 @@ $('openBtn').onclick = () => { startMusic(); sequence(); };
     g.classList.remove('shake'); void g.offsetWidth; g.classList.add('shake');
   };
 })();
-startMusic().then(ok => { if (ok || !CONFIG.musicFile) sequence(); });
 
 $('yes').onclick = async e => {
   const r = e.currentTarget.getBoundingClientRect();
