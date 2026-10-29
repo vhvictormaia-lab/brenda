@@ -279,3 +279,5 @@
 @keyframes shine{0%{background-position:150% 0}60%,100%{background-position:-60% 0}}
 @media (max-height:520px) and (orientation:landscape){.bktitle{top:6px;left:auto;right:12px;align-items:flex-end;text-align:right}.bktitle b{font-size:1rem}.bktitle small{font-size:.65rem}}
 .bkL,.bkR{transform:translateZ(2px)}
+.bkleaf{translate:0 0 4px}
+.bkspan{translate:0 0 3px}
