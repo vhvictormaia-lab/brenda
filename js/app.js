@@ -960,6 +960,12 @@ async function dia10(fm){
   O.hidden = false; O.classList.remove('pray', 'fin'); O.dataset.theme = theme; D10Y = window.scrollY || document.documentElement.scrollTop || 0; document.body.classList.add('lock'); void O.offsetWidth; O.classList.add('on');
   audioCtx(); duck(.25);
   const notes = D10T[theme] || D10T.rosa;
+  if (cfg.book && typeof livro === 'function') {        // mês 2: o livro substitui as etapas normais
+    O.classList.add('bkon');
+    try { await livro(c); } catch (e) { console.warn('livro', e); }
+    if (!alive()) return;
+    S.skip = true;                                     // pula direto para o final com fogos
+  } else O.classList.remove('bkon');
 
   /* 1. relógio chegando à meia-noite */
   st('d1'); const dc = $('dclock'); dc.classList.remove('mid'); $('dt1').textContent = '';
